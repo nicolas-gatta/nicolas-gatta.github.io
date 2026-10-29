@@ -17,6 +17,5 @@
     "noEmit": true,
     "types": ["react/jsx-runtime"]
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src"]
 }

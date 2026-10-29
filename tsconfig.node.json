@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
-    "composite": true,
+    "target": "ES2021",
+    "lib": ["ES2021"],
+    "types": ["node"],
+    "noEmit": true,
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "bundler",

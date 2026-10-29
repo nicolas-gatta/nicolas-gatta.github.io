@@ -1,0 +1,211 @@
+.page {
+  padding-top: 60px;
+  padding-bottom: 80px;
+}
+.page svg {
+  color: inherit;
+}
+.topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line, var(--line));
+  color: var(--muted);
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 50px;
+  padding: 45px 0 58px;
+}
+.header h1 {
+  font-size: clamp(64px, 8vw, 112px);
+  letter-spacing: -0.075em;
+  line-height: 1;
+  margin: 0;
+  font-weight: 500;
+}
+.header h1 span {
+  color: var(--accent);
+}
+.header > div {
+  max-width: 425px;
+}
+.header p {
+  font-size: 22px;
+  letter-spacing: -0.025em;
+  margin: 0 0 12px;
+}
+.header .intro {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+.experiences {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+.card {
+  position: relative;
+  display: block;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  text-decoration: none;
+  color: var(--ink);
+  overflow: hidden;
+  transition:
+    border-color 0.25s,
+    transform 0.25s;
+}
+.card:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+}
+.card:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 5px;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 42px;
+  height: 1px;
+  background: var(--accent);
+  opacity: .65;
+  transition: width .3s;
+}
+.card:hover::before {
+  width: 100%;
+}
+.garage {
+  background: var(--surface);
+}
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 26px 0;
+  font: 10px/1.5 var(--font-mono, monospace);
+  letter-spacing: 0.1em;
+  color: var(--subtle);
+}
+.art {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1.68;
+  object-fit: contain;
+  margin: 14px 0 6px;
+}
+.cardBody {
+  padding: 12px 28px 0;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+}
+.cardBody h2 {
+  font-size: 31px;
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  margin: 12px 0;
+}
+.cardBody p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--muted);
+  margin: 0;
+  max-width: 345px;
+}
+.arrow {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.cardLink {
+  margin: 26px 28px;
+  padding: 18px 0 0;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  font: 10px/1.5 var(--font-mono, monospace);
+  letter-spacing: 0.1em;
+}
+.note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 33px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.note p {
+  margin: 0;
+}
+.note a {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: inherit;
+}
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+@media (max-width: 700px) {
+  .page {
+    padding-top: 30px;
+    padding-bottom: 45px;
+  }
+  .header {
+    display: block;
+    padding: 35px 0;
+  }
+  .header > div {
+    margin-top: 25px;
+  }
+  .header p {
+    font-size: 21px;
+  }
+  .experiences {
+    grid-template-columns: 1fr;
+  }
+  .note {
+    flex-wrap: wrap;
+    line-height: 1.6;
+  }
+  .note a {
+    width: 100%;
+    margin-left: 16px;
+  }
+  .cardBody h2 {
+    font-size: 29px;
+  }
+  .topline {
+    gap: 20px;
+  }
+  .topline span {
+    font-size: 9px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+  .card:hover {
+    transform: none;
+  }
+}

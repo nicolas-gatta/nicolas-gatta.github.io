@@ -1,0 +1,491 @@
+.page {
+  padding-top: 70px;
+  padding-bottom: 80px;
+}
+.header {
+  padding-bottom: 45px;
+}
+.headerRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+}
+.header h1 {
+  font-size: clamp(3.3rem, 5.5vw, 5.6rem);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.065em;
+  margin: 25px 0;
+}
+.header h1 span {
+  color: var(--subtle);
+}
+.headerRow > div > p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.8;
+  margin: 0;
+}
+.jump {
+  background: none;
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-decoration: none;
+  color: var(--accent);
+  padding: 0 10px 8px;
+}
+.jump > span {
+  font: 8px/1.5 var(--mono);
+  letter-spacing: 1px;
+}
+.documentBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 25px;
+  padding: 23px 26px;
+  background: var(--surface-raised);
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--accent);
+}
+.documentBar > div {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.documentBar > div > svg {
+  color: var(--accent);
+}
+.documentBar strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+}
+.documentBar small {
+  display: block;
+  margin-top: 5px;
+  font: 8px/1.5 var(--mono);
+  letter-spacing: 0.8px;
+  color: var(--muted);
+}
+.documentBar > a {
+  flex-shrink: 0;
+}
+.body {
+  display: grid;
+  grid-template-columns: 235px minmax(0, 1fr);
+  gap: 72px;
+  padding-top: 64px;
+  scroll-margin-top: 95px;
+}
+.identity {
+  position: sticky;
+  top: 115px;
+  align-self: start;
+}
+.monogram {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 67px;
+  height: 67px;
+  border: 1px solid var(--line);
+  background: var(--surface-raised);
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -2px;
+  border-color: var(--line-strong);
+}
+.monogram > span {
+  color: var(--accent);
+}
+.identity h2 {
+  font-size: 24px;
+  letter-spacing: -0.8px;
+  font-weight: 500;
+  margin: 23px 0 7px;
+}
+.role {
+  font: 10px/1.5 var(--mono);
+  letter-spacing: 1px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin: 0;
+}
+.identity dl {
+  margin: 32px 0;
+}
+.identity dl > div {
+  margin-bottom: 20px;
+}
+.identity dt {
+  font: 8px/1.5 var(--mono);
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.identity dd {
+  font-size: 12px;
+  color: var(--ink);
+  margin: 0;
+  line-height: 1.7;
+}
+.email {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  color: var(--ink);
+  text-decoration: none;
+  border-top: 1px solid var(--line);
+  padding-top: 21px;
+  font-size: 12px;
+}
+.identityLinks {
+  display: flex;
+  gap: 22px;
+  margin-top: 20px;
+}
+.identityLinks a {
+  font-size: 10px;
+  color: var(--muted);
+  text-decoration: none;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.content section {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 38px;
+  margin-bottom: 40px;
+}
+.content section > h2 {
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: -0.8px;
+  line-height: 1.25;
+  margin: 19px 0;
+}
+.content section > p {
+  font-size: 13px;
+  line-height: 1.95;
+  color: var(--muted);
+}
+.content .introduction > p {
+  font-size: 14px;
+}
+.content .note {
+  font-size: 10px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.experiences {
+  margin-top: 28px;
+}
+.experience {
+  display: grid;
+  grid-template-columns: 55px 1fr;
+  gap: 20px;
+  margin-bottom: 27px;
+}
+.date {
+  font: 10px/1.5 var(--mono);
+  color: var(--accent);
+  padding-top: 4px;
+}
+.experience h3 {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 0 0 7px;
+}
+.experience p {
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin: 0;
+}
+.experience ul {
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--muted);
+  padding-left: 18px;
+}
+.skillGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin-top: 27px;
+}
+.skillGrid h3 {
+  font-size: 12px;
+  font-weight: 500;
+  margin: 0 0 13px;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.tags span {
+  border: 1px solid var(--line);
+  padding: 5px 7px;
+  font-size: 9px;
+  color: var(--muted);
+  border-radius: 2px;
+  background: var(--surface);
+}
+.education h3 {
+  font-weight: 500;
+  font-size: 15px;
+}
+.education p {
+  font-size: 12px;
+  color: var(--muted);
+}
+.projectList {
+  margin-top: 12px;
+}
+.projectList > a {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+.projectList > a > span {
+  font: 9px/1.5 var(--mono);
+  color: var(--accent);
+}
+.projectList > a > div {
+  flex: 1;
+}
+.projectList h3 {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 5px;
+}
+.projectList p {
+  font-size: 10px;
+  color: var(--muted);
+  margin: 0;
+}
+.projectList > a > svg {
+  color: var(--accent);
+  transition: transform 0.2s;
+}
+.projectList > a:hover > svg {
+  transform: translate(3px, -3px);
+}
+.content .pdfSection {
+  border-bottom: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.pdfHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.pdfHeader h2 {
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: -0.8px;
+  margin: 19px 0;
+}
+.pdfHeader a {
+  font-size: 10px;
+  color: var(--accent-dark);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.pdfPreview {
+  margin-top: 23px;
+}
+.pdfPreview iframe {
+  display: block;
+  width: 100%;
+  height: 680px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  border-color: var(--line-strong);
+}
+.pdfPreview > p {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 10px;
+}
+.pdfPreview > p > a {
+  color: var(--accent-dark);
+}
+.mobilePdf {
+  display: none !important;
+}
+.footer {
+  margin-top: 65px;
+  border-top: 1px solid var(--line);
+  padding-top: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+}
+.footer h2 {
+  font-size: 36px;
+  font-weight: 500;
+  letter-spacing: -1.4px;
+  margin: 13px 0 0;
+}
+@media (max-width: 900px) {
+  .body {
+    grid-template-columns: 190px minmax(0, 1fr);
+    gap: 35px;
+  }
+  .content section > h2,
+  .pdfHeader h2 {
+    font-size: 25px;
+  }
+  .skillGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .identity h2 {
+    font-size: 22px;
+  }
+  .pdfPreview iframe {
+    height: 540px;
+  }
+}
+@media (max-width: 650px) {
+  .page {
+    padding-top: 43px;
+    padding-bottom: 50px;
+  }
+  .header h1 {
+    font-size: 3.45rem;
+  }
+  .jump {
+    background: none;
+    border: 0;
+    font-family: inherit;
+    cursor: pointer;
+    display: none;
+  }
+  .header {
+    padding-bottom: 30px;
+  }
+  .documentBar {
+    padding: 17px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .documentBar strong {
+    font-size: 11px;
+  }
+  .documentBar small {
+    font-size: 7px;
+  }
+  .documentBar > a {
+    width: 100%;
+    justify-content: center;
+  }
+  .body {
+    grid-template-columns: 1fr;
+    padding-top: 35px;
+    gap: 35px;
+  }
+  .identity {
+    position: static;
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    column-gap: 16px;
+    align-items: start;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 25px;
+  }
+  .monogram {
+    grid-row: 1/3;
+    width: 60px;
+    height: 60px;
+  }
+  .identity h2 {
+    margin: 3px 0 4px;
+    font-size: 23px;
+  }
+  .role {
+    font-size: 9px;
+    grid-column: 2;
+  }
+  .identity dl {
+    grid-column: 1/-1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px 28px;
+    margin: 25px 0 5px;
+  }
+  .identity dl > div {
+    margin-bottom: 12px;
+  }
+  .identity dd {
+    font-size: 11px;
+  }
+  .email {
+    grid-column: 1/-1;
+    border-top: 0;
+    padding-top: 7px;
+  }
+  .identityLinks {
+    grid-column: 1/-1;
+    margin-top: 14px;
+  }
+  .skillGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 23px 17px;
+  }
+  .content .introduction > p {
+    font-size: 13px;
+  }
+  .content section {
+    padding-bottom: 27px;
+    margin-bottom: 30px;
+  }
+  .pdfPreview {
+    display: none;
+  }
+  .mobilePdf {
+    display: flex !important;
+    margin-top: 18px;
+    font-size: 11px !important;
+    justify-content: center;
+  }
+  .pdfHeader h2 {
+    font-size: 24px;
+  }
+  .footer {
+    margin-top: 40px;
+    display: block;
+  }
+  .footer h2 {
+    font-size: 30px;
+  }
+  .footer > a {
+    margin-top: 23px;
+  }
+  .experience {
+    gap: 10px;
+    grid-template-columns: 45px 1fr;
+  }
+  .experience h3 {
+    font-size: 15px;
+  }
+}

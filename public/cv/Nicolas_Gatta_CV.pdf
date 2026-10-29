@@ -1,0 +1,78 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+6 0 obj
+<< /Length 3577 >>
+stream
+0.957 0.961 0.949 rg 0 0 595 842 re f
+0.25 0.43 0.36 rg BT /F2 9 Tf 1 0 0 1 48 790 Tm (N.GATTA / CURRICULUM VITAE) Tj ET
+0.09 0.10 0.11 rg BT /F2 33 Tf 1 0 0 1 48 746 Tm (Nicolas Gatta) Tj ET
+0.25 0.36 0.31 rg BT /F1 13 Tf 1 0 0 1 48 721 Tm (Data Engineer | AI / Data / Software) Tj ET
+0.34 0.41 0.36 rg BT /F1 9 Tf 1 0 0 1 48 699 Tm (Belgium | French / English / Dutch) Tj ET
+0.34 0.41 0.36 rg BT /F1 9 Tf 1 0 0 1 48 681 Tm (nicolasgatta1@gmail.com | github.com/nicolas-gatta) Tj ET
+0.88 0.92 0.86 rg 48 611 499 48 re f
+0.24 0.38 0.25 rg BT /F2 9 Tf 1 0 0 1 60 640 Tm (CONTENT DRAFT / FIRST EDITION) Tj ET
+0.25 0.37 0.26 rg BT /F1 8 Tf 1 0 0 1 60 625 Tm (Representative content is awaiting confirmation. Replace this document with the final CV.) Tj ET
+0.25 0.43 0.36 rg BT /F2 9 Tf 1 0 0 1 48 585 Tm (01 / PROFILE) Tj ET
+0.10 0.13 0.12 rg BT /F1 10 Tf 1 0 0 1 48 566 Tm (Data Engineer with a background in Artificial Intelligence, Data Analytics and) Tj ET
+0.10 0.13 0.12 rg BT /F1 10 Tf 1 0 0 1 48 551 Tm (Software Engineering. Interested in building complete systems: intelligent models,) Tj ET
+0.10 0.13 0.12 rg BT /F1 10 Tf 1 0 0 1 48 536 Tm (data platforms, software and the infrastructure that connects them.) Tj ET
+0.80 0.85 0.81 RG 0.6 w 48 518 m 547 518 l S
+0.25 0.43 0.36 rg BT /F2 9 Tf 1 0 0 1 48 496 Tm (02 / TECHNICAL FOCUS) Tj ET
+0.10 0.13 0.12 rg BT /F1 9 Tf 1 0 0 1 48 477 Tm (Data: Python, SQL, data pipelines, data modelling) Tj ET
+0.10 0.13 0.12 rg BT /F1 9 Tf 1 0 0 1 48 462 Tm (AI: machine learning, computer vision, RAG, model evaluation) Tj ET
+0.10 0.13 0.12 rg BT /F1 9 Tf 1 0 0 1 48 447 Tm (Software: TypeScript, React, API design, Git) Tj ET
+0.10 0.13 0.12 rg BT /F1 9 Tf 1 0 0 1 48 432 Tm (Infrastructure: Linux, Docker, networking, automation) Tj ET
+0.40 0.46 0.40 rg BT /F1 8 Tf 1 0 0 1 48 415 Tm (Areas of practice and exploration. No proficiency ratings are implied.) Tj ET
+0.80 0.85 0.81 RG 0.6 w 48 399 m 547 399 l S
+0.25 0.43 0.36 rg BT /F2 9 Tf 1 0 0 1 48 377 Tm (03 / REPRESENTATIVE TIMELINE) Tj ET
+0.10 0.13 0.12 rg BT /F1 9 Tf 1 0 0 1 48 358 Tm (2021   Brussels South Charleroi Airport) Tj ET
+0.10 0.13 0.12 rg BT /F1 9 Tf 1 0 0 1 48 342 Tm (2024   Takeda) Tj ET
+0.10 0.13 0.12 rg BT /F1 9 Tf 1 0 0 1 48 326 Tm (2025   Google) Tj ET
+0.10 0.13 0.12 rg BT /F1 9 Tf 1 0 0 1 48 310 Tm (2026   IBM) Tj ET
+0.40 0.46 0.40 rg BT /F1 8 Tf 1 0 0 1 48 292 Tm (Dates supplied for the portfolio concept. Roles and relationships to be confirmed.) Tj ET
+0.80 0.85 0.81 RG 0.6 w 48 276 m 547 276 l S
+0.25 0.43 0.36 rg BT /F2 9 Tf 1 0 0 1 48 254 Tm (04 / SELECTED PROJECT CONCEPTS) Tj ET
+0.10 0.13 0.12 rg BT /F1 9 Tf 1 0 0 1 48 235 Tm (DermaTrack - computer vision, super resolution, IoT, medical imaging) Tj ET
+0.10 0.13 0.12 rg BT /F1 9 Tf 1 0 0 1 48 219 Tm (Knowledge Systems - retrieval-augmented generation and traceable answers) Tj ET
+0.10 0.13 0.12 rg BT /F1 9 Tf 1 0 0 1 48 203 Tm (Unmonitarr - automation and self-hosted systems) Tj ET
+0.40 0.46 0.40 rg BT /F1 8 Tf 1 0 0 1 48 185 Tm (Illustrative case studies. Final implementations and outcomes are not yet verified.) Tj ET
+0.80 0.85 0.81 RG 0.6 w 48 169 m 547 169 l S
+0.25 0.43 0.36 rg BT /F2 9 Tf 1 0 0 1 48 147 Tm (05 / EDUCATION & CERTIFICATIONS) Tj ET
+0.10 0.13 0.12 rg BT /F1 9 Tf 1 0 0 1 48 128 Tm (Confirmed qualifications and certifications will be added with the final CV.) Tj ET
+0.80 0.85 0.81 RG 0.6 w 48 100 m 547 100 l S
+0.34 0.41 0.36 rg BT /F1 8 Tf 1 0 0 1 48 79 Tm (nicolas-gatta.github.io) Tj ET
+0.34 0.41 0.36 rg BT /F1 8 Tf 1 0 0 1 393 79 Tm (CONTENT DRAFT / PAGE 01) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Title (Nicolas Gatta - CV Content Draft) /Author (Nicolas Gatta) /Subject (Illustrative portfolio draft, awaiting confirmation) >>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000000321 00000 n 
+0000000396 00000 n 
+0000004025 00000 n 
+trailer
+<< /Size 8 /Root 1 0 R /Info 7 0 R >>
+startxref
+4175
+%%EOF
