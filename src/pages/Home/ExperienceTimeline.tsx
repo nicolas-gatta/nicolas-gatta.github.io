@@ -74,30 +74,18 @@ export default function ExperienceTimeline() {
             <Building2 size={25} />
             <div>
               <p className="eyebrow">
-                {experience.period} /{' '}
-                {experience.isPlaceholder
-                  ? 'REPRESENTATIVE MILESTONE'
-                  : 'EXPERIENCE'}
+                {experience.period} / EXPERIENCE
               </p>
               <h3>{experience.company}</h3>
-              {experience.isPlaceholder ? (
-                <p>
-                  Roles, scope and achievements will be added with confirmed
-                  career details.
-                </p>
-              ) : (
-                <>
-                  <p>
-                    <strong>{experience.role}</strong>
-                  </p>
-                  <p>{experience.summary}</p>
-                  <ul>
-                    {experience.responsibilities.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </>
-              )}
+              <p>
+                <strong>{experience.role}</strong>
+              </p>
+              <p>{experience.summary}</p>
+              <ul>
+                {experience.responsibilities.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
               {experience.technologies.length > 0 && (
                 <div>
                   {experience.technologies.map((tech) => (

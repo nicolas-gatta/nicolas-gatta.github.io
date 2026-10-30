@@ -1,199 +1,230 @@
 import type { Project } from './models';
 
-/** The supplied project names are presented as illustrative case studies.
- * Replace proposed architectures and outcomes with verified details.
- */
+/** Project scope, technologies and status are sourced from the current CV. */
 export const projects: Project[] = [
   {
-    id: 'dermatrack',
-    number: '01',
-    title: 'DermaTrack',
-    category: 'Artificial Intelligence',
-    summary:
-      'A closer look at the intersection of imaging, connected devices and computer vision.',
-    year: '2024 — 2025',
-    tags: ['Computer Vision', 'Super Resolution', 'IoT', 'Medical Imaging'],
-    overview:
-      'An illustrative exploration of how connected imaging hardware and computer vision could support consistent image capture and analysis. The project name and focus areas are supplied; the case study is a draft.',
-    problem:
-      'Image quality and capture conditions can vary between devices. An engineering approach needs to consider the complete path from acquisition to analysis, including uncertainty and responsible handling of sensitive data.',
-    architecture: [
-      'Connected image capture',
-      'Quality checks & preparation',
-      'Super-resolution research',
-      'Computer vision evaluation',
-      'Review interface',
-    ],
-    challenges:
-      'Balancing image enhancement with the risk of introducing artificial details, evaluating models across capture conditions, and maintaining traceability from source image to output.',
-    results:
-      'Final implementation, evaluation results and screenshots are awaiting confirmation. This illustration does not describe a clinically validated or deployed medical system.',
-    visual: 'vision',
-    featured: true,
-    isPlaceholder: true,
-  },
-  {
-    id: 'knowledge-systems',
-    number: '02',
-    title: 'Knowledge Systems',
-    category: 'Artificial Intelligence',
-    summary:
-      'Exploring retrieval-augmented generation with a focus on useful, traceable answers.',
-    year: 'EXPLORATION',
-    tags: ['RAG', 'Python', 'Vector Search', 'LLMs'],
-    overview:
-      'A representative AI / RAG project concept: turning a collection of documents into a searchable knowledge interface. The architecture below is a proposal rather than a claim of a delivered product.',
-    problem:
-      'Useful information often lives across disconnected documents. A retrieval system should make relevant context accessible while keeping sources visible and handling missing evidence honestly.',
-    architecture: [
-      'Document ingestion',
-      'Chunking & indexing',
-      'Semantic retrieval',
-      'Grounded generation',
-      'Citation & evaluation',
-    ],
-    challenges:
-      'Choosing meaningful evaluation cases, measuring retrieval quality, handling document updates, and avoiding unsupported answers when the knowledge base is incomplete.',
-    results:
-      'This draft is ready for real datasets, implementation notes and evaluation evidence. No performance or accuracy figures are asserted.',
-    visual: 'rag',
-    featured: true,
-    isPlaceholder: true,
-  },
-  {
     id: 'unmonitarr',
-    number: '03',
+    number: '01',
     title: 'Unmonitarr',
     category: 'Software & Infrastructure',
     summary:
-      'Thinking through the small automations that make a self-hosted environment easier to run.',
-    year: 'LAB / SOFTWARE',
-    tags: ['Automation', 'Self-hosting', 'APIs'],
+      'Webhook middleware that automatically changes newly approved media requests to an unmonitored state.',
+    year: 'ACTIVELY MAINTAINED',
+    tags: ['Python', 'HTML', 'JavaScript', 'CSS', 'Webhooks'],
     overview:
-      'A supplied project name, presented here as a placeholder for a future automation case study. The proposed focus is practical software that connects services and reduces repetitive maintenance.',
+      'A webhook-based middleware service integrating Overseerr or Jellyseerr with Radarr or Sonar to automate the state of newly approved media requests.',
     problem:
-      'Self-hosted services can accumulate repetitive tasks. Small, focused tools can help when they have clear boundaries, observable behavior and predictable failure handling.',
+      'Newly approved requests needed an automated path to an unmonitored state across the connected media-management services.',
     architecture: [
-      'Service adapters',
-      'Rules & scheduling',
-      'Background tasks',
-      'Activity logging',
+      'Approved media request',
+      'Webhook event',
+      'Unmonitarr middleware',
+      'Radarr / Sonar integration',
+      'Unmonitored state',
     ],
     challenges:
-      'Idempotent operations, API changes, retries and providing enough visibility to understand what an automation has changed.',
-    results:
-      'Repository, final scope and delivered features will be added after confirmation.',
+      'The current CV confirms the integration scope but does not document implementation trade-offs or operational constraints.',
+    results: 'Actively maintained.',
     visual: 'infra',
     featured: true,
-    isPlaceholder: true,
+    isPlaceholder: false,
   },
   {
     id: 'ptero-panel',
-    number: '04',
+    number: '02',
     title: 'Ptero-Panel',
     category: 'Software & Infrastructure',
     summary:
-      'A systems interface concept for managing services with less friction.',
-    year: 'LAB / SOFTWARE',
-    tags: ['Web Interfaces', 'Infrastructure', 'APIs'],
+      'A self-hosted Pterodactyl dashboard for server monitoring, control and organization.',
+    year: 'ACTIVELY MAINTAINED',
+    tags: ['HTML', 'JavaScript', 'CSS', 'Pterodactyl', 'Self-hosting'],
     overview:
-      'An illustrative project entry using the supplied Ptero-Panel name. The proposed case study explores service management through a clear web interface.',
+      'A self-hosted Pterodactyl management dashboard with server monitoring and control, secure server-side API integration, hierarchical organization and persistent configuration.',
     problem:
-      'An operational interface must communicate the current state of a service clearly and make important actions understandable.',
+      'Server monitoring and management needed a focused interface that could also be embedded into popular dashboard environments.',
     architecture: [
-      'Management interface',
-      'API boundary',
-      'Service operations',
-      'State & activity',
+      'Management dashboard',
+      'Secure server-side API',
+      'Hierarchical server organization',
+      'Persistent configuration',
+      'Dashboard embedding',
     ],
     challenges:
-      'Handling asynchronous state, making destructive actions explicit and maintaining useful feedback when a remote service is unavailable.',
-    results:
-      'Final architecture, technology choices and implementation details are awaiting confirmation.',
+      'The current CV confirms the delivered capabilities but does not describe security decisions or implementation trade-offs in detail.',
+    results: 'Actively maintained.',
     visual: 'infra',
     featured: false,
-    isPlaceholder: true,
+    isPlaceholder: false,
   },
   {
     id: 'cronario',
-    number: '05',
+    number: '03',
     title: 'Cronario',
     category: 'Software & Infrastructure',
     summary:
-      'An exploration of scheduling, dependable execution and useful operational feedback.',
-    year: 'LAB / SOFTWARE',
-    tags: ['Scheduling', 'Automation', 'Observability'],
+      'A scheduling platform for planning, validating and optimizing workloads across systems.',
+    year: 'IN DEVELOPMENT',
+    tags: ['React', 'TypeScript', 'Vite', 'SCSS', 'JSON'],
     overview:
-      'A supplied project name with an illustrative scheduling-system case study. This draft describes design questions rather than delivered capabilities.',
+      'A scheduling-management platform combining cron-expression assistance, execution-timeline visualization and conflict detection.',
     problem:
-      'Scheduled work needs more than a timer: execution history, failure visibility and understandable scheduling rules are essential.',
+      'Scheduled workloads across multiple machines and applications need to be easier to plan, validate and optimize.',
     architecture: [
+      'Cron expression assistance',
       'Schedule definition',
-      'Task queue',
-      'Execution worker',
-      'Run history & alerts',
+      'Execution timeline',
+      'Conflict detection',
+      'Multi-system planning',
     ],
     challenges:
-      'Time zones, duplicate execution, missed schedules and making retries safe for the task being run.',
-    results:
-      'Implementation, screenshots and verified outcomes will be added as the case study is completed.',
+      'The project is still in development; the current CV does not yet document final implementation decisions or measured outcomes.',
+    results: 'In development.',
+    visual: 'schedule',
+    featured: true,
+    isPlaceholder: false,
+  },
+  {
+    id: 'tawa',
+    number: '04',
+    title: 'T.A.W.A.',
+    category: 'Software & Data',
+    summary:
+      'A desktop application for managing job applications, career history and salary information.',
+    year: 'IN DEVELOPMENT',
+    tags: ['Vite', 'React', 'TypeScript', 'SQLite', 'ATS'],
+    overview:
+      'Treatment and Automation of Work Application is a desktop application for managing and tracking job applications and professional history.',
+    problem:
+      'Application status, salary calculations and professional history needed to be brought together in one structured tool.',
+    architecture: [
+      'Application tracking system',
+      'Persistent SQLite data',
+      'Dynamic charts',
+      'Gross-to-net calculator',
+      'Career and salary history',
+    ],
+    challenges:
+      'The project is in development; detailed architecture decisions and validation results are not included in the current CV.',
+    results: 'In development.',
     visual: 'schedule',
     featured: false,
-    isPlaceholder: true,
+    isPlaceholder: false,
   },
   {
     id: 'tune-taker',
-    number: '06',
+    number: '05',
     title: 'Tune Taker',
-    category: 'Experiments',
+    category: 'Mobile Applications',
     summary:
-      'A small space for experimenting with audio, software and better everyday tools.',
-    year: 'LAB / EXPERIMENT',
-    tags: ['Audio', 'Software', 'Experimentation'],
+      'A Flutter application for finding and downloading music through links, search or audio recognition.',
+    year: 'ACTIVELY MAINTAINED',
+    tags: ['Dart', 'Flutter', 'YouTube API', 'Shazam API'],
     overview:
-      'An illustrative entry for the supplied Tune Taker project name. The final feature set and technical approach have not yet been provided.',
+      'An application that lets users download music from YouTube using a direct link, title or artist search, or audio recognition.',
     problem:
-      'Audio tools are a useful place to explore responsive interfaces and the relationship between raw signals and meaningful user feedback.',
+      'Users needed multiple fast discovery paths—direct URL, text search and audio recognition—within one application.',
     architecture: [
-      'Audio input',
-      'Signal preparation',
-      'Processing experiment',
-      'Playback & interface',
+      'Link, title or artist input',
+      'YouTube API search',
+      'Shazam audio recognition',
+      'Track resolution',
+      'Download',
     ],
     challenges:
-      'Keeping interaction responsive, handling different input formats and making processing feedback understandable.',
-    results:
-      'Final scope and results are awaiting confirmation. The visual is an abstract illustration rather than a product screenshot.',
+      'The CV confirms the integrations and speed claim but does not document platform constraints or implementation trade-offs.',
+    results: 'Actively maintained; the CV reports downloads in under 10 seconds.',
     visual: 'audio',
     featured: false,
-    isPlaceholder: true,
+    isPlaceholder: false,
   },
   {
-    id: 'homelab',
-    number: '07',
-    title: 'The Homelab',
-    category: 'Software & Infrastructure',
+    id: 'dermatrack',
+    number: '06',
+    title: 'DermaTrack',
+    category: 'Artificial Intelligence',
     summary:
-      'A hands-on environment for understanding how the pieces of a system fit together.',
-    year: 'ONGOING EXPLORATION',
-    tags: ['Linux', 'Networking', 'Containers', 'Self-hosting'],
+      'Dermatological monitoring software combining computer vision, super-resolution and purpose-built capture hardware.',
+    year: 'RELEASED',
+    tags: [
+      'Python',
+      'Django',
+      'PyTorch',
+      'Computer Vision',
+      'IoT',
+      'Super-Resolution',
+    ],
     overview:
-      'A representative infrastructure project focused on learning by building complete systems. Specific hardware, services and topology are intentionally left open until confirmed.',
+      'Dermatological monitoring software that helps dermatologists capture, process and annotate images collected through a purpose-built external device.',
     problem:
-      'Working across the application and infrastructure boundary helps reveal practical tradeoffs in reliability, deployment and maintenance.',
+      'Dermatological image capture and annotation needed an integrated workflow with improved image quality and a purpose-built acquisition device.',
     architecture: [
-      'Network boundary',
-      'Compute & containers',
-      'Storage & backups',
-      'Monitoring & operations',
+      'Purpose-built external device',
+      'Image capture',
+      'Super-resolution processing',
+      'Computer-vision workflow',
+      'Dermatologist annotation interface',
     ],
     challenges:
-      'Making services observable, protecting access, planning recovery and keeping an experimental environment maintainable.',
+      'The CV lists SRCNN, SRGAN, ESRGAN and EDVR as explored technologies but does not document comparative evaluation details.',
     results:
-      'The production topology, hardware inventory and measured outcomes will be documented after confirmation.',
+      'Released; the CV reports a 15% image-quality improvement through computer vision and super-resolution algorithms.',
+    visual: 'vision',
+    featured: true,
+    isPlaceholder: false,
+  },
+  {
+    id: 'c-3bot',
+    number: '07',
+    title: 'C-3BOT',
+    category: 'Artificial Intelligence',
+    summary:
+      'An NLP-powered chatbot prototype for code correction and optimization recommendations.',
+    year: 'RELEASED',
+    tags: ['Python', 'Django', 'PyTorch', 'NLP', 'BERT', 'Word2Vec'],
+    overview:
+      'An AI-powered chatbot prototype using natural-language processing to assist with code correction and optimization.',
+    problem:
+      'Code feedback needed to be organized into useful recommendations while retaining basic conversational interaction.',
+    architecture: [
+      'Code and conversation input',
+      'NLP preprocessing',
+      'Language representation',
+      'Five recommendation categories',
+      'Conversational response',
+    ],
+    challenges:
+      'The CV lists BERT, TF-IDF, Bag of Words, Word2Vec and GloVe but does not provide comparative model-evaluation results.',
+    results: 'Released as a working prototype.',
+    visual: 'rag',
+    featured: false,
+    isPlaceholder: false,
+  },
+  {
+    id: 'energo-sphere',
+    number: '08',
+    title: 'Energo-Sphere',
+    category: 'Software & Data',
+    summary:
+      'A web application for energy portfolio monitoring, contract management and provider notifications.',
+    year: 'RELEASED',
+    tags: ['Angular', 'TypeScript', 'Java', 'SQL', 'SCSS'],
+    overview:
+      'A web-based energy portfolio management application for monitoring consumption, managing contracts and receiving real-time provider notifications.',
+    problem:
+      'Energy consumption, contracts and provider communication needed a unified portfolio interface.',
+    architecture: [
+      'Energy and contract data',
+      'Java API',
+      'SQL persistence',
+      'Angular portfolio interface',
+      'Real-time notifications',
+    ],
+    challenges:
+      'The current CV confirms the application scope but does not include deployment details or measured operational outcomes.',
+    results: 'Released.',
     visual: 'infra',
     featured: false,
-    isPlaceholder: true,
+    isPlaceholder: false,
   },
 ];
 
@@ -201,5 +232,6 @@ export const projectCategories = [
   'All work',
   'Artificial Intelligence',
   'Software & Infrastructure',
-  'Experiments',
+  'Software & Data',
+  'Mobile Applications',
 ];

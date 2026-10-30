@@ -132,16 +132,10 @@ export default function DigitalHero() {
 
   useLayoutEffect(() => {
     let frame = 0;
-    const themeMeta = document.querySelector<HTMLMetaElement>(
-      'meta[name="theme-color"]'
-    );
-    const previousTheme = themeMeta?.content;
     const update = () => {
       const rect = section.current?.getBoundingClientRect();
       if (!rect) return;
-      const visible = rect.bottom > 100 && rect.top < window.innerHeight;
-      document.documentElement.dataset.worldTheme = visible ? 'dark' : 'light';
-      if (themeMeta) themeMeta.content = visible ? '#080b0e' : '#f4f5f2';
+      document.documentElement.dataset.worldTheme = 'dark';
       scrollProgress.set(
         Math.min(1, Math.max(0, -rect.top / Math.max(1, rect.height * 0.8)))
       );
@@ -159,7 +153,6 @@ export default function DigitalHero() {
       window.removeEventListener('resize', schedule);
       delete document.documentElement.dataset.worldTheme;
       delete document.documentElement.dataset.worldIntro;
-      if (themeMeta && previousTheme) themeMeta.content = previousTheme;
     };
   }, [scrollProgress]);
   useLayoutEffect(() => {
@@ -305,6 +298,7 @@ export default function DigitalHero() {
       </motion.div>
       <Intro
         active={active}
+        progress={progress}
         onSkip={finish}
         soundEnabled={enabled}
         soundAvailable={available}

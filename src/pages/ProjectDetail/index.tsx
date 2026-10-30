@@ -63,17 +63,10 @@ export default function ProjectDetailPage() {
       <figure className={styles.figure}>
         <ProjectVisual type={project.visual} large />
         <figcaption>
-          ILLUSTRATIVE SYSTEM DIAGRAM{' '}
-          <span>FIG. {project.number} / ARCHITECTURE CONCEPT</span>
+          SYSTEM FLOW{' '}
+          <span>FIG. {project.number} / DOCUMENTED SCOPE</span>
         </figcaption>
       </figure>
-      {project.isPlaceholder && (
-        <p className={styles.draft}>
-          <span aria-hidden="true">↳</span> Case study draft. Project
-          descriptions, proposed architecture and diagrams are illustrative;
-          final scope and outcomes are awaiting confirmation.
-        </p>
-      )}
       <div className={styles.body}>
         <aside className={styles.sidebar}>
           <span className="eyebrow">IN THIS MODULE</span>
@@ -119,7 +112,7 @@ export default function ProjectDetailPage() {
           </section>
           <section id="architecture" tabIndex={-1}>
             <span className={styles.chapterNumber}>
-              03 / PROPOSED ARCHITECTURE
+              03 / SYSTEM FLOW
             </span>
             <h2>From input to outcome.</h2>
             <ol className={styles.architecture}>

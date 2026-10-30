@@ -111,22 +111,11 @@ try {
       .waitFor();
     await page.screenshot({ path: '.qa/cv-desktop.png', fullPage: true });
   });
-  await check('Computer works without loading 3D', async () => {
-    await page.goto(`${base}#/lab/computer`);
-    await page.getByRole('button', { name: 'Start NICO OS' }).click();
-    await page.getByRole('button', { name: 'HOMELAB', exact: true }).click();
-    await page
-      .getByRole('heading', { name: 'The infrastructure playground.' })
-      .waitFor();
-    assert(
-      !requests.some((url) =>
-        /DeskScene|GarageScene|useSceneVisibility/.test(url)
-      )
-    );
-    await page.screenshot({
-      path: '.qa/computer-blueprint.png',
-      fullPage: true,
-    });
+  await check('Lab is removed from the public application', async () => {
+    await page.goto(`${base}#/lab`);
+    await page.getByRole('heading', { name: /YOU DIED/ }).waitFor();
+    assert.equal(await page.getByRole('link', { name: 'Lab', exact: true }).count(), 0);
+    assert(!requests.some((url) => /LabHubScene|DeskScene|GarageScene/.test(url)));
   });
   await check('Terminal commands, history and keyboard dismissal', async () => {
     await page.keyboard.press('Control+Backquote');
@@ -156,47 +145,6 @@ try {
     await page.keyboard.press('Escape');
     assert.equal(await page.locator('dialog[open]').count(), 0);
   });
-  await check('Garage selection and optional 3D render', async () => {
-    await page.goto(`${base}#/lab/garage`);
-    await page
-      .getByRole('heading', { name: 'Mazda RX-7', exact: true })
-      .waitFor();
-    await page.getByRole('button', { name: 'Select next vehicle' }).click();
-    await page
-      .getByRole('heading', { name: 'Toyota Supra', exact: true })
-      .waitFor();
-    await page.screenshot({ path: '.qa/garage-blueprint.png', fullPage: true });
-    await page.getByRole('button', { name: 'Enable 3D' }).click();
-    await page.locator('canvas').waitFor();
-    await page.waitForTimeout(1000);
-    await page.screenshot({ path: '.qa/garage-3d.png', fullPage: true });
-  });
-  await check(
-    'Desk render, monitor transition and context-loss recovery',
-    async () => {
-      await page.goto(`${base}#/lab/computer`);
-      await page.getByRole('button', { name: 'Enable 3D' }).click();
-      await page.locator('canvas').waitFor();
-      await page.getByRole('button', { name: 'Start NICO OS' }).click();
-      await page
-        .getByRole('heading', { name: 'Make yourself at home.' })
-        .waitFor();
-      await page.waitForTimeout(300);
-      await page.screenshot({ path: '.qa/computer-3d.png', fullPage: true });
-      await page
-        .locator('canvas')
-        .evaluate((canvas) =>
-          (canvas.getContext('webgl2') || canvas.getContext('webgl'))
-            .getExtension('WEBGL_lose_context')
-            .loseContext()
-        );
-      await page.getByRole('button', { name: /3D unavailable/ }).waitFor();
-      await page.getByRole('button', { name: 'HOMELAB', exact: true }).click();
-      await page
-        .getByRole('heading', { name: 'The infrastructure playground.' })
-        .waitFor();
-    }
-  );
   await check(
     'Matrix and Konami are optional, dismissible discoveries',
     async () => {
@@ -249,9 +197,6 @@ try {
       '#/cv': /Engineering,/,
       '#/projects': /Built with/,
       '#/projects/dermatrack': 'DermaTrack',
-      '#/lab': /The lab/i,
-      '#/lab/computer': /A little closer/,
-      '#/lab/garage': /Dream garage/,
       '#/contact': /LET’S BUILD/,
       '#/not-a-page': /YOU DIED/,
     };
@@ -262,9 +207,6 @@ try {
         '#/cv',
         '#/projects',
         '#/projects/dermatrack',
-        '#/lab',
-        '#/lab/computer',
-        '#/lab/garage',
         '#/contact',
         '#/not-a-page',
       ]) {
@@ -288,9 +230,8 @@ try {
         await page.screenshot({ path: '.qa/home-mobile.png', fullPage: true });
         await page.getByRole('button', { name: 'Open navigation' }).click();
         await page.getByRole('link', { name: 'CV', exact: true }).click();
-        await page
-          .getByRole('link', { name: 'Download PDF', exact: true })
-          .waitFor();
+        await page.locator('#cv').waitFor();
+        assert(page.url().includes('section=cv'));
         assert.equal(
           await page
             .getByRole('button', { name: 'Open navigation' })
@@ -359,30 +300,12 @@ try {
       await intro
         .getByRole('heading', { name: /Built with/, level: 1 })
         .waitFor();
-      await intro.getByRole('link', { name: /N\.GATTA.*home/ }).click();
+      await intro.getByRole('link', { name: /Nicolas Gatta.*home/ }).click();
       await intro.getByRole('heading', { name: 'NICOLAS GATTA.' }).waitFor();
       assert.equal(await hero.getAttribute('data-intro-active'), 'false');
       await first.close();
     }
   );
-  await check('WebGL failure preserves NICO OS controls', async () => {
-    const blocked = await browser.newContext({ reducedMotion: 'reduce' });
-    await blocked.addInitScript(() => {
-      const original = HTMLCanvasElement.prototype.getContext;
-      HTMLCanvasElement.prototype.getContext = function (kind, ...args) {
-        return /webgl/i.test(kind) ? null : original.call(this, kind, ...args);
-      };
-    });
-    const fallback = await blocked.newPage();
-    await fallback.goto(`${base}#/lab/computer`);
-    await fallback.getByRole('button', { name: 'Enable 3D' }).click();
-    await fallback.getByRole('button', { name: /3D unavailable/ }).waitFor();
-    await fallback.getByRole('button', { name: 'Start NICO OS' }).click();
-    await fallback
-      .getByRole('heading', { name: 'Make yourself at home.' })
-      .waitFor();
-    await blocked.close();
-  });
   await writeFile(
     '.qa/smoke-results.json',
     JSON.stringify({ base, checks: results }, null, 2)

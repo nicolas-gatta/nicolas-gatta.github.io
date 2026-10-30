@@ -1,9 +1,11 @@
+import { motion, useTransform, type MotionValue } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import { ArrowRight, Volume2, VolumeX } from 'lucide-react';
 import styles from './Intro.module.css';
 
 interface IntroProps {
   active: boolean;
+  progress: MotionValue<number>;
   soundEnabled: boolean;
   soundAvailable: boolean;
   onToggleSound: () => void;
@@ -13,6 +15,7 @@ interface IntroProps {
 /** Transparent controls over the actual hero: the world and typography never swap pages. */
 export default function Intro({
   active,
+  progress,
   soundEnabled,
   soundAvailable,
   onToggleSound,
@@ -44,6 +47,13 @@ export default function Intro({
       }
     };
   }, [active]);
+  const markOpacity = useTransform(
+    progress,
+    [0.16, 0.28, 0.42, 0.52],
+    [0, 0.9, 0.9, 0]
+  );
+  const markScale = useTransform(progress, [0.16, 0.42, 0.52], [0.82, 1, 1.08]);
+  const markY = useTransform(progress, [0.16, 0.42, 0.52], [18, 0, -18]);
   if (!active) return null;
   return (
     <dialog
@@ -77,6 +87,16 @@ export default function Intro({
         A digital world forms from light, then becomes Nicolas Gatta’s
         portfolio. Sound is off. Skip at any time.
       </p>
+      <motion.div
+        className={styles.identity}
+        style={{ opacity: markOpacity, scale: markScale, y: markY }}
+        aria-hidden="true"
+      >
+        <span className={styles.identityRule} />
+        <strong>Nicolas Gatta</strong>
+        <span className={styles.identityMeta}>SYSTEM / IDENTITY DETECTED</span>
+        <span className={styles.identityRule} />
+      </motion.div>
       <div className={styles.controlBar}>
         <button
           className={styles.sound}

@@ -128,11 +128,11 @@ export default function Home() {
       <div className="page-shell">
         <section
           className={styles.organizations}
-          aria-label="Representative organizations"
+          aria-label="Organizations from Nicolas Gatta's professional experience"
         >
           <div className={styles.orgIntro}>
-            REPRESENTATIVE ORGANIZATIONS
-            <span>Illustrative · relationships unconfirmed</span>
+            PROFESSIONAL EXPERIENCE
+            <span>Organizations listed in the current CV</span>
           </div>
           <div className={styles.orgNames}>
             {organizations.map((organization) => (
@@ -273,11 +273,15 @@ export default function Home() {
               ))}
           </div>
           <p className={styles.contentNote}>
-            Project concepts & draft case studies. Final scope, screenshots and
-            results to be added.
+            Project scope, technologies and status sourced from the current CV.
           </p>
         </section>
-        <section className={styles.cvCallout} aria-labelledby="cv-heading">
+        <section
+          className={styles.cvCallout}
+          id="cv"
+          tabIndex={-1}
+          aria-labelledby="cv-heading"
+        >
           <div className={styles.cvIcon}>
             <FileText size={27} strokeWidth={1.1} />
           </div>
@@ -291,6 +295,7 @@ export default function Home() {
             <ArrowUpRight size={15} />
           </Link>
         </section>
+        {false && (
         <section
           className={`${styles.section} ${styles.lab}`}
           id="lab"
@@ -359,6 +364,7 @@ export default function Home() {
             </Link>
           </div>
         </section>
+        )}
         <ContactSection />
       </div>
     </>

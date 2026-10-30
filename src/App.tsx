@@ -9,9 +9,6 @@ import ErrorBoundary from './components/ui/ErrorBoundary';
 const CV = lazy(() => import('./pages/CV'));
 const Projects = lazy(() => import('./pages/Projects'));
 const ProjectDetail = lazy(() => import('./pages/ProjectDetail'));
-const Lab = lazy(() => import('./pages/Lab'));
-const Computer = lazy(() => import('./pages/Computer'));
-const Garage = lazy(() => import('./pages/Garage'));
 const Contact = lazy(() => import('./pages/Contact'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const SecretSystem = lazy(() => import('./features/easterEggs/SecretSystem'));
@@ -36,9 +33,6 @@ export default function App() {
                 <Route path="/cv" element={<CV />} />
                 <Route path="/projects" element={<Projects />} />
                 <Route path="/projects/:id" element={<ProjectDetail />} />
-                <Route path="/lab" element={<Lab />} />
-                <Route path="/lab/computer" element={<Computer />} />
-                <Route path="/lab/garage" element={<Garage />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>

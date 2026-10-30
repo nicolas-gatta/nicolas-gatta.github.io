@@ -66,8 +66,8 @@ export default function ProjectsPage() {
         </label>
       </div>
       <p className={styles.draftNote}>
-        First edition · project descriptions and diagrams are illustrative
-        drafts awaiting final case studies.
+        Scope, technologies and project status are sourced from the current CV.
+        Diagrams summarize the documented application flows.
       </p>
       <p className={styles.srOnly} aria-live="polite">
         {filteredProjects.length} projects found.

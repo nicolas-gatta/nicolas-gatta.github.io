@@ -1,7 +1,5 @@
 export type TerminalAction =
   | 'projects'
-  | 'cars'
-  | 'homelab'
   | 'cv'
   | 'clear'
   | 'matrix'
@@ -17,8 +15,6 @@ export const commandNames = [
   'about',
   'projects',
   'skills',
-  'cars',
-  'homelab',
   'whoami',
   'neofetch',
   'cv',
@@ -40,8 +36,6 @@ export function executeCommand(input: string): CommandResponse {
           'about       The engineer',
           'projects    Open selected work',
           'skills      A few tools of the trade',
-          'cars        Visit the Dream Garage',
-          'homelab     Explore the computer',
           'whoami      An existential query',
           'neofetch    System information',
           'cv          Open the professional CV',
@@ -57,7 +51,7 @@ export function executeCommand(input: string): CommandResponse {
       return {
         lines: [
           'Nicolas Gatta',
-          'Data Engineer · Belgium',
+          'AI Engineer | Data Engineer · Belgium',
           '',
           'I build intelligent systems, data platforms and software.',
           'Curiosity is usually where the interesting work begins.',
@@ -68,29 +62,19 @@ export function executeCommand(input: string): CommandResponse {
     case 'skills':
       return {
         lines: [
-          'DATA       Python / SQL / data platforms',
-          'AI         Machine learning / computer vision / RAG',
-          'SOFTWARE   APIs / web applications / system design',
-          'SYSTEMS    Infrastructure / containers / homelab',
+          'CODE       Python / SQL / Java',
+          'AI / ML    PyTorch / Scikit-learn / OpenCV',
+          'DATA       Pandas / NumPy / Databricks / MLflow',
+          'WEB        React / Angular / TypeScript',
           '',
           'An evolving toolkit, driven by the problem.',
         ],
-      };
-    case 'cars':
-      return {
-        lines: ['Opening Dream Garage. Engineering first, daydreaming second.'],
-        action: 'cars',
-      };
-    case 'homelab':
-      return {
-        lines: ['Opening the lab. Please mind the cables.'],
-        action: 'homelab',
       };
     case 'whoami':
       return {
         lines: [
           'nicolas',
-          'Data Engineer',
+          'AI Engineer | Data Engineer',
           'Human',
           'Probably debugging something.',
         ],
@@ -99,11 +83,11 @@ export function executeCommand(input: string): CommandResponse {
       return {
         lines: [
           'Nicolas@portfolio',
-          'Role       Data Engineer',
+          'Role       AI Engineer | Data Engineer',
           'Focus      AI / Data / Software',
           'Languages  FR / EN / NL',
           'Location   Belgium',
-          'Stack      Python / SQL / AI / Data',
+          'Stack      Python / SQL / PyTorch / Databricks',
           'Uptime     Still curious',
         ],
         kind: 'neofetch',

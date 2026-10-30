@@ -4,8 +4,8 @@
   left: 24px;
   z-index: 1000;
   padding: 14px 22px;
-  background: var(--ink);
-  color: white;
+  background: var(--highlight);
+  color: #10242c;
 }
 .skip:focus {
   top: 15px;
@@ -13,6 +13,7 @@
 .footer {
   border-top: 1px solid var(--line);
   padding-top: 46px;
+  background: #080b0e;
 }
 .inner {
   display: flex;
@@ -40,7 +41,6 @@
   padding-top: 5px;
   flex-wrap: wrap;
 }
-.links a,
 .links button {
   display: flex;
   align-items: center;
@@ -50,7 +50,6 @@
   background: none;
   padding: 0;
 }
-.links a:hover,
 .links button:hover {
   color: var(--accent-dark);
 }

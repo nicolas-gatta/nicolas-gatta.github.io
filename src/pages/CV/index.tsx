@@ -11,6 +11,7 @@ import { profile } from '../../data/profile';
 import { experiences, experienceDisclaimer } from '../../data/experience';
 import { skills } from '../../data/skills';
 import { education } from '../../data/education';
+import { certifications } from '../../data/certifications';
 import { projects } from '../../data/projects';
 import styles from './CV.module.css';
 
@@ -48,11 +49,7 @@ export default function CVPage() {
           <FileText size={20} aria-hidden="true" />
           <span>
             <strong>Nicolas_Gatta_CV.pdf</strong>
-            <small>
-              {profile.cvIsPlaceholder
-                ? 'CONTENT DRAFT · REPLACE WITH FINAL CV'
-                : 'PDF DOCUMENT · READY TO DOWNLOAD'}
-            </small>
+            <small>PDF DOCUMENT · READY TO DOWNLOAD</small>
           </span>
         </div>
         <a className="button button-primary" href={profile.cvPath} download>
@@ -102,16 +99,14 @@ export default function CVPage() {
             <span className="eyebrow">01 / PROFILE</span>
             <h2>From the data to the whole system.</h2>
             <p>
-              Data Engineer with a background in Artificial Intelligence, Data
-              Analytics and Software Engineering. I’m interested in the
-              connections between disciplines: intelligent models, dependable
-              data platforms and the software and infrastructure that bring them
-              together.
+              AI Engineer and Data Engineer with professional experience in AI
+              workflow automation, process transformation, data-center
+              operations, retrieval-augmented generation and computer vision.
             </p>
             <p>
-              Outside the professional work, I keep experimenting with
-              infrastructure, electronics and the small tools that make systems
-              better.
+              My background combines a Master’s specialization in Artificial
+              Intelligence and Data Analytics with software, data and MLOps
+              skills used across production and personal projects.
             </p>
           </section>
           <section>
@@ -125,22 +120,18 @@ export default function CVPage() {
                   <div>
                     <h3>{item.company}</h3>
                     <p>{item.role}</p>
-                    {!item.isPlaceholder && (
-                      <>
-                        <p>{item.summary}</p>
-                        <ul>
-                          {item.responsibilities.map((responsibility) => (
-                            <li key={responsibility}>{responsibility}</li>
-                          ))}
-                        </ul>
-                        {item.technologies.length > 0 && (
-                          <div className={styles.tags}>
-                            {item.technologies.map((technology) => (
-                              <span key={technology}>{technology}</span>
-                            ))}
-                          </div>
-                        )}
-                      </>
+                    <p>{item.summary}</p>
+                    <ul>
+                      {item.responsibilities.map((responsibility) => (
+                        <li key={responsibility}>{responsibility}</li>
+                      ))}
+                    </ul>
+                    {item.technologies.length > 0 && (
+                      <div className={styles.tags}>
+                        {item.technologies.map((technology) => (
+                          <span key={technology}>{technology}</span>
+                        ))}
+                      </div>
                     )}
                   </div>
                 </article>
@@ -148,11 +139,10 @@ export default function CVPage() {
             </div>
           </section>
           <section>
-            <span className="eyebrow">03 / TECHNICAL FOCUS</span>
+            <span className="eyebrow">03 / COMPETENCIES</span>
             <h2>A connected set of disciplines.</h2>
             <p className={styles.note}>
-              Areas of practice and exploration. Individual proficiency levels
-              are not implied.
+              Technical and professional competencies listed in the current CV.
             </p>
             <div className={styles.skillGrid}>
               {skills.map((group) => (
@@ -182,13 +172,28 @@ export default function CVPage() {
               ))
             ) : (
               <p>
-                Formal education and certification details will be added with
-                the final CV. No qualifications are listed in this draft.
+                Education details are available in the downloadable CV.
               </p>
             )}
           </section>
           <section>
-            <span className="eyebrow">05 / SELECTED PROJECTS</span>
+            <span className="eyebrow">05 / CERTIFICATIONS</span>
+            <h2>Validated foundations.</h2>
+            <div className={styles.skillGrid}>
+              {certifications.map((certification) => (
+                <div key={certification.issuer}>
+                  <h3>{certification.issuer}</h3>
+                  <div className={styles.tags}>
+                    {certification.credentials.map((credential) => (
+                      <span key={credential}>{credential}</span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+          <section>
+            <span className="eyebrow">06 / SELECTED PROJECTS</span>
             <h2>Ideas made tangible.</h2>
             <div className={styles.projectList}>
               {projects
@@ -205,12 +210,12 @@ export default function CVPage() {
                 ))}
             </div>
             <p className={styles.note}>
-              Illustrative case studies. Final implementations and outcomes to
-              be confirmed.
+              Scope, technologies and project status sourced from the current
+              CV.
             </p>
           </section>
           <section className={styles.pdfSection}>
-            <span className="eyebrow">06 / THE DOCUMENT</span>
+            <span className="eyebrow">07 / THE DOCUMENT</span>
             <div className={styles.pdfHeader}>
               <h2>The portable version.</h2>
               <a
@@ -221,16 +226,10 @@ export default function CVPage() {
                 Open PDF <ExternalLink size={13} aria-hidden="true" />
               </a>
             </div>
-            {profile.cvIsPlaceholder && (
-              <p className={styles.note}>
-                This is a clearly labelled content draft. Replace it with the
-                final CV before sharing professionally.
-              </p>
-            )}
             <div className={styles.pdfPreview}>
               <iframe
                 src={`${profile.cvPath}#view=FitH&toolbar=0`}
-                title="Nicolas Gatta curriculum vitae — content draft PDF preview"
+                title="Nicolas Gatta curriculum vitae PDF preview"
                 loading="lazy"
               />
               <p>
@@ -261,7 +260,7 @@ export default function CVPage() {
           <span className="eyebrow">THE NEXT CHAPTER</span>
           <h2>Let’s build something.</h2>
         </div>
-        <Link className="button button-primary" to="/contact">
+        <Link className="button button-primary" to="/?section=contact">
           Contact me <ArrowUpRight size={16} aria-hidden="true" />
         </Link>
       </footer>

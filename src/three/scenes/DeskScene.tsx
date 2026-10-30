@@ -41,6 +41,18 @@ function Workstation({
   useCursor(hovered);
   return (
     <group>
+      {[-4.4, 4.4].map((x) => (
+        <group key={x} position={[x, 1.6, -1.2]}>
+          <Block position={[0, 0, 0]} size={[1.3, 3.2, 1.25]} color="#101a21" />
+          {[-1.05, -0.55, -0.05, 0.45, 0.95].map((y, index) => (
+            <group key={y}>
+              <Block position={[0, y, 0.64]} size={[1.02, 0.28, 0.04]} color="#263942" />
+              <mesh position={[0.38, y, 0.68]}><sphereGeometry args={[0.025, 6, 6]} /><meshBasicMaterial color={index % 2 ? '#d68a3a' : '#42c7e8'} /></mesh>
+            </group>
+          ))}
+        </group>
+      ))}
+      <Block position={[0, 2.9, -2.5]} size={[9.8, 0.12, 0.12]} color="#36535f" />
       <Block position={[0, 0.92, 0]} size={[6.2, 0.18, 3.1]} color="#182d38" />
       {[
         [-2.6, 0.43, -1],

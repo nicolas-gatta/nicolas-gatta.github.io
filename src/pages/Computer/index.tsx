@@ -17,13 +17,15 @@ import { DeskIllustration } from '../../features/three/Illustrations';
 import styles from './Computer.module.css';
 
 const DeskScene = lazy(() => import('../../three/scenes/DeskScene'));
-type OSSection = 'PROJECTS' | 'HOMELAB' | 'HARDWARE' | 'EXPERIMENTS' | 'ABOUT';
+type OSSection = 'PROJECTS' | 'HOMELAB' | 'ELECTRONICS' | 'SYSTEM' | 'CV' | 'ABOUT' | 'FILES';
 const menu: OSSection[] = [
   'PROJECTS',
   'HOMELAB',
-  'HARDWARE',
-  'EXPERIMENTS',
+  'ELECTRONICS',
+  'SYSTEM',
+  'CV',
   'ABOUT',
+  'FILES',
 ];
 
 export default function Computer() {
@@ -54,9 +56,9 @@ export default function Computer() {
       </Link>
       <header className={styles.header}>
         <div>
-          <span className="eyebrow">PERSONAL ENVIRONMENT / 001</span>
+          <span className="eyebrow">SERVER ROOM / PERSONAL ENVIRONMENT 001</span>
           <h1>
-            A little closer
+            Inside the system
             <br />
             to the hardware.
           </h1>
@@ -64,7 +66,7 @@ export default function Computer() {
         <p>
           Every system starts somewhere.
           <br />
-          This one starts at the desk.
+          This one leads through the racks to the desk.
         </p>
       </header>
       <div className={styles.workstation}>
@@ -216,9 +218,9 @@ export default function Computer() {
                     </p>
                   </>
                 )}
-                {section === 'HARDWARE' && (
+                {section === 'ELECTRONICS' && (
                   <>
-                    <span className={styles.directory}>~/hardware</span>
+                    <span className={styles.directory}>~/electronics</span>
                     <h3>Understand it. Then build it.</h3>
                     <p>
                       Electronics, small computers and a healthy appreciation
@@ -243,16 +245,16 @@ export default function Computer() {
                     </p>
                   </>
                 )}
-                {section === 'EXPERIMENTS' && (
+                {section === 'SYSTEM' && (
                   <>
-                    <span className={styles.directory}>~/experiments</span>
-                    <h3>Small tests. Better questions.</h3>
+                    <span className={styles.directory}>~/system</span>
+                    <h3>Data, compute and storage.</h3>
                     <p>
-                      Exploring retrieval-augmented generation, image processing
-                      and ways to make everyday tools a little more useful.
+                      A conceptual infrastructure map covering Linux, containers,
+                      virtualization, monitoring and resilient backups.
                     </p>
                     <Link to="/projects" className={styles.osLink}>
-                      Explore the experiments <ArrowRight size={14} />
+                      Explore the projects <ArrowRight size={14} />
                     </Link>
                   </>
                 )}
@@ -269,6 +271,8 @@ export default function Computer() {
                     </Link>
                   </>
                 )}
+                {section === 'CV' && <><span className={styles.directory}>~/professional-record</span><h3>The concise version.</h3><p>Experience, skills, selected work and languages in a recruiter-friendly format.</p><Link to="/cv" className={styles.osLink}>Open CV <ArrowRight size={14}/></Link></>}
+                {section === 'FILES' && <><span className={styles.directory}>~/files</span><h3>Project directory.</h3><p>Case studies, architecture notes and technical decisions live in the standard accessible project pages.</p><Link to="/projects" className={styles.osLink}>Browse files <ArrowRight size={14}/></Link></>}
               </div>
               <div className={styles.osFooter}>
                 <span>nico@workstation ~</span>

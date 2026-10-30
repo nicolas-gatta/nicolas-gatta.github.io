@@ -8,7 +8,6 @@ export interface Profile {
   github: string;
   linkedin: string;
   cvPath: string;
-  cvIsPlaceholder: boolean;
 }
 
 export interface Experience {
@@ -31,6 +30,11 @@ export interface Education {
   description?: string;
 }
 
+export interface Certification {
+  issuer: string;
+  credentials: string[];
+}
+
 export type ProjectVisual = 'vision' | 'rag' | 'infra' | 'schedule' | 'audio';
 
 export interface Project {
@@ -43,10 +47,12 @@ export interface Project {
   tags: string[];
   overview: string;
   problem: string;
+  role?: string;
   architecture: string[];
   challenges: string;
   results: string;
   github?: string;
+  documentation?: string;
   visual: ProjectVisual;
   featured: boolean;
   isPlaceholder: boolean;
@@ -76,4 +82,19 @@ export interface Achievement {
   id: string;
   title: string;
   description: string;
+}
+
+export interface Organization {
+  id: string;
+  name: string;
+  relationship: string;
+  isPlaceholder: boolean;
+}
+
+export interface LabHotspot {
+  id: string;
+  label: string;
+  description: string;
+  destination?: string;
+  topics: string[];
 }

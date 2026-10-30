@@ -5,9 +5,6 @@ const titles: Record<string, string> = {
   '/': 'Nicolas Gatta — Data Engineer | AI & Software',
   '/cv': 'CV — Nicolas Gatta',
   '/projects': 'Selected Work — Nicolas Gatta',
-  '/lab': 'The Lab — Nicolas Gatta',
-  '/lab/computer': 'Nico OS — Nicolas Gatta',
-  '/lab/garage': 'Dream Garage — Nicolas Gatta',
   '/contact': 'Contact — Nicolas Gatta',
 };
 export default function RouteEffects() {

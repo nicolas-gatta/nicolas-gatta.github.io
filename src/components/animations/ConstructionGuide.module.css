@@ -11,6 +11,6 @@
   display: block;
   width: 100%;
   height: 1px;
-  background: linear-gradient(90deg, #35a6c8 0%, #70bfcb 35%, #dce0dd 90%);
+  background: linear-gradient(90deg, var(--accent) 0%, #2d8195 35%, var(--line) 90%);
   transform-origin: left;
 }

@@ -7,10 +7,9 @@ import styles from './Navigation.module.css';
 const links = [
   { label: 'About', to: '/?section=about' },
   { label: 'Experience', to: '/?section=experience' },
-  { label: 'Projects', to: '/projects' },
-  { label: 'CV', to: '/cv' },
-  { label: 'Lab', to: '/lab' },
-  { label: 'Contact', to: '/contact' },
+  { label: 'Projects', to: '/?section=projects' },
+  { label: 'CV', to: '/?section=cv' },
+  { label: 'Contact', to: '/?section=contact' },
 ];
 export default function Navigation() {
   const [open, setOpen] = useState(false);
@@ -63,7 +62,7 @@ export default function Navigation() {
         <Link
           to="/"
           className={styles.logo}
-          aria-label="N.GATTA — Nicolas Gatta home"
+          aria-label="Nicolas Gatta — Nicolas Gatta home"
         >
           <span className={styles.mark} aria-hidden="true">
             <i />
@@ -71,7 +70,7 @@ export default function Navigation() {
             <i />
             <i />
           </span>
-          N.GATTA
+          Nicolas Gatta
           <span className={styles.dot} aria-hidden="true">
             _
           </span>

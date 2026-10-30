@@ -77,8 +77,8 @@ export default function Garage() {
                   }
                 >
                   <GarageScene
-                    color={car.color}
-                    body={car.body}
+                    selected={index}
+                    onSelect={setIndex}
                     onFailure={stopThree}
                   />
                 </Suspense>

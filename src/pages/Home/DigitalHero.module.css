@@ -98,6 +98,40 @@
   transform-origin: left bottom;
   will-change: transform;
 }
+.word:first-child {
+  margin: 0 0 0.28em 0.16em;
+  font-size: 0.42em;
+  line-height: 1;
+  letter-spacing: 0.24em;
+  font-weight: 450;
+}
+.word:first-child::before {
+  content: 'IDENTITY / 001';
+  position: absolute;
+  left: calc(100% + 24px);
+  top: 50%;
+  width: max-content;
+  transform: translateY(-50%);
+  color: #7895a0;
+  font: 0.105em var(--mono);
+  letter-spacing: 0.14em;
+}
+.word:first-child::after {
+  content: '';
+  position: absolute;
+  right: calc(100% + 13px);
+  top: 50%;
+  width: 24px;
+  height: 1px;
+  background: #42c7e8;
+}
+.word:first-child .letterFill {
+  color: transparent;
+  -webkit-text-stroke: 0.8px #8db3bd;
+}
+.word:nth-child(2) {
+  letter-spacing: -0.075em;
+}
 .word {
   display: flex;
   width: max-content;

@@ -19,9 +19,9 @@ npm run preview
 
 On Windows with a restrictive PowerShell execution policy, use `npm.cmd` instead of `npm`. No policy changes are necessary.
 
-## Content and the initial draft
+## Content
 
-The supplied company dates are a **representative timeline**, not confirmed employment. Project names are supplied examples; their architectures and case studies are explicitly illustrative. Education, certifications, outcomes and private details have not been invented. Replace these entries before sharing the site as a finished professional profile.
+Professional experience, education, certifications, technical competencies and project scope are sourced from the current CV. Public pages intentionally omit the phone number, exact home municipality and nationality shown in the private document.
 
 | Content                                                                       | File                                        |
 | ----------------------------------------------------------------------------- | ------------------------------------------- |
@@ -32,16 +32,17 @@ The supplied company dates are a **representative timeline**, not confirmed empl
 | Projects, architecture, results, screenshots and optional GitHub URLs         | `src/data/projects.ts`                      |
 | Skill groups                                                                  | `src/data/skills.ts`                        |
 | Education                                                                     | `src/data/education.ts`                     |
+| Certifications                                                                | `src/data/certifications.ts`                |
 | Vehicles, manufacturer sources and illustrative interest scores               | `src/data/cars.ts`                          |
 | Hidden achievements                                                           | `src/features/achievements/achievements.ts` |
 
-The downloadable `public/cv/Nicolas_Gatta_CV.pdf` is a real, readable **CONTENT DRAFT** PDF. Replace it with the final CV, then set `cvIsPlaceholder: false` in `profile.ts`. `cvPath` uses Vite’s base URL, so downloads also work from a repository subpath. The PDF is linked in the navigation, hero, dedicated CV page and no-JavaScript version. The desktop preview is optional; mobile visitors get an open/download action.
+The downloadable `public/cv/Nicolas_Gatta_CV.pdf` is the source document for professional content. `cvPath` uses Vite’s base URL, so downloads also work from a repository subpath. The PDF is linked in the navigation, hero, dedicated CV page and no-JavaScript version. The desktop preview is optional; mobile visitors get an open/download action.
 
-Add education to its typed array when available. Add certifications as a confirmed content section when supplied. Project `screenshots` accepts `{ src, alt }[]`; use `${import.meta.env.BASE_URL}images/filename.webp` for files in `public/images`. `github` is optional, and no speculative repository links are shown.
+Project `screenshots` accepts `{ src, alt }[]`; use `${import.meta.env.BASE_URL}images/filename.webp` for files in `public/images`. `github` and `documentation` are optional, and no speculative repository links are shown.
 
 ## Routes and GitHub Pages
 
-The app deliberately uses **HashRouter**. Routes look like `/#/cv`, `/#/projects/dermatrack`, `/#/lab/computer` and `/#/lab/garage`. The requested `/cv` route exists inside the router. The URL fragment is not sent to GitHub Pages, so direct links, refreshes and repository subpaths work without server rewrites or redirect hacks.
+The app deliberately uses **HashRouter**. Routes look like `/#/cv` and `/#/projects/dermatrack`. The requested `/cv` route exists inside the router. The URL fragment is not sent to GitHub Pages, so direct links, refreshes and repository subpaths work without server rewrites or redirect hacks.
 
 About and Experience links use `/#/?section=about` and `/#/?section=experience`; the router scrolls to accessible section landmarks. Native `#section` links would conflict with hash routing and are avoided. Unknown app routes show the “YOU DIED” page; the build also generates a matching static `404.html` for genuinely missing server paths.
 
@@ -73,11 +74,11 @@ The base path controls all assets, PDF links and the build. The full site URL co
 
 ## Design and performance
 
-The opening constructs an original digital environment from a point of cyan light: a horizon, perspective grid, branching data trails and abstract computational architecture. A smooth forward camera movement settles into the dark hero, where the actual name typography is revealed within the same scene. The city remains dimly visible behind the content, and the first scroll raises and flattens its perspective before the light professional sections. Procedural Canvas2D projection provides the spatial effect without loading Three.js, models or textures on the homepage. If canvas is unavailable, the hero and professional navigation still work. With JavaScript disabled, a semantic static portfolio provides About, the representative timeline, selected projects, CV and contact information.
+The opening constructs an original digital environment from a point of cyan light: a horizon, perspective grid, branching data trails and abstract computational architecture. A smooth forward camera movement settles into the dark hero, where the actual name typography is revealed within the same scene. The same graphite surfaces, cyan energy paths and restrained technical framing continue across every professional section. Procedural Canvas2D projection provides the opening without loading Three.js, models or textures on the homepage. If canvas is unavailable, the hero and professional navigation still work. With JavaScript disabled, a semantic static portfolio provides About, verified experience, selected projects, education, certifications, CV and contact information.
 
-- Routes and secret interfaces are split into separate chunks. Computer and garage scene chunks load only after their own Enable 3D button is pressed.
+- Routes and secret interfaces are split into separate chunks. The parked Three.js Lab source is not imported by the current application.
 - Primitive geometry stands in for final 3D assets. There are no model downloads, external environments, postprocessing or texture files. When adding GLB assets, compress geometry with Meshopt/Draco, use small WebP/AVIF textures, and import them only inside the scene chunks.
-- WebGL uses a low-power preference, DPR capped at 1.5, demand-based rendering and a paused frame loop while the tab is hidden. Mobile and reduced-motion visitors keep the lightweight illustrated view unless they explicitly opt in.
+- The retained Lab scenes use capped DPR, demand-based rendering and a paused frame loop, ready for a later iteration without affecting the current public bundle.
 - Scene/import/context failures recover to the illustrated interface. All OS actions and car specifications remain available as ordinary React controls. The optional shared Three.js chunk is large by design; Vite may report a size warning for it. It is never requested by the homepage or CV.
 - Only one self-hosted Inter Latin variable WOFF2 is used and preloaded. System fonts remain available as fallbacks.
 - Motion honors the OS preference. The full opening lasts approximately 6.8 seconds on the first visit; a new homepage load in the same session uses a brief 1.6-second horizon/grid pulse. Internal route navigation does not replay the sequence. Skip and Escape finish it immediately. Direct section links and reduced-motion visitors go straight to the completed hero. Optional synthesized sound starts only after a visitor explicitly enables it, and stops when the sequence ends or the page is left; no audio autoplays.
@@ -102,7 +103,7 @@ node scripts/intro-check.mjs
 
 Set `CHROME_PATH` if Chrome is not at its standard Windows location (or installed as the `chrome` channel elsewhere). Set `TEST_URL` to test a different origin or a repository subpath. Screenshots and results go to ignored `.qa/`.
 
-The suite checks real downloads, timeline expansion, section navigation, project search, direct-route refreshes, CV access, terminal commands/history, illustrated computer controls, vehicle selection, optional WebGL, responsive pages from 320px to desktop, intro skip/session behavior, no-JavaScript access and recovery when WebGL is forcibly disabled. Run `npm audit` for dependency advisories.
+The suite checks real downloads, timeline expansion, homepage section navigation, project search, direct-route refreshes, CV access, terminal commands/history, responsive pages from 320px to desktop, intro skip/session behavior, no-JavaScript access and verifies that the parked Lab is absent from public routes and chunks. Run `npm audit` for dependency advisories.
 
 Final local desktop Lighthouse checks in Chrome 156 (Windows, production preview):
 
@@ -111,15 +112,15 @@ Final local desktop Lighthouse checks in Chrome 156 (Windows, production preview
 | Home | 100         | 100           | 100            | 100 |
 | CV   | 100         | 100           | 100            | 100 |
 
-The 14 portfolio browser checks and nine cinematic checks pass. They cover phase continuity, the first scroll, session behavior, reduced motion, keyboard controls, canvas failure and explicit sound opt-in. The portfolio has also been verified under `/portfolio/`. TypeScript and production builds pass, and the dependency audit reports zero vulnerabilities. For Lighthouse, run the **production preview** and choose Desktop. Scores depend on machine, browser, extensions and hosting; these are lab measurements, not guarantees for every device or a substitute for a full accessibility audit.
+The portfolio browser suite and cinematic checks cover phase continuity, the first scroll, session behavior, reduced motion, keyboard controls, canvas failure and explicit sound opt-in. The portfolio has also been verified under `/portfolio/`. TypeScript and production builds pass. For Lighthouse, run the **production preview** and choose Desktop. Scores depend on machine, browser, extensions and hosting; these are lab measurements, not guarantees for every device or a substitute for a full accessibility audit.
 
 During development, remove the session-storage key `ng:world-intro-seen:v1` and reload to replay the full opening. The opening clock lives in `src/features/intro/useWorldSequence.ts`; procedural geometry and construction timings live in `DigitalWorldRenderer.ts`. `DigitalHero.tsx` constructs the actual hero letters, so no duplicate title or page swap is needed. The first opening is 6.8 seconds, a session return is 1.6 seconds, and no asset download controls either duration.
 
 ## Exploring
 
-The Lab’s NICO OS is ordinary accessible HTML next to an optional 3D workstation. A monitor click or Start NICO OS powers it on. The garage has five vehicle studies, keyboard selection and explicit illustrative asset/rating labels.
+The Lab source is retained for a later iteration, but it is not linked, routed or included in the current public application bundle.
 
-The footer or `Ctrl` + backtick opens the fictional terminal. Try `help`, `whoami`, `neofetch`, `projects`, `skills`, `cars`, `homelab`, `cv`, `system`, `matrix`, `sudo`, `clear` or `exit`. Commands are simulated; no input is executed on the visitor’s device. Escape closes overlays. The Konami sequence toggles a small developer grid with viewport and FPS diagnostics. Discoveries are remembered only in the current browser session.
+The footer or `Ctrl` + backtick opens the fictional terminal. Try `help`, `whoami`, `neofetch`, `projects`, `skills`, `cv`, `system`, `matrix`, `sudo`, `clear` or `exit`. Commands are simulated; no input is executed on the visitor’s device. Escape closes overlays. The Konami sequence toggles a small developer grid with viewport and FPS diagnostics. Discoveries are remembered only in the current browser session.
 
 ## Structure
 
@@ -128,8 +129,8 @@ src/
   components/         layout, navigation, construction guides, error handling
   data/               typed professional content and vehicles
   features/           intro, terminal, achievements, secrets, WebGL lifecycle
-  pages/              Home, CV, Projects, ProjectDetail, Lab, Computer, Garage,
-                      Contact, NotFound; each with scoped CSS Modules
+  pages/              Home, CV, Projects, ProjectDetail, Contact and NotFound;
+                      parked Lab source remains available for later work
   three/scenes/       optional low-poly desk and garage scenes
   index.css           typography, tokens, shared controls, accessibility
 public/

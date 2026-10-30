@@ -1,21 +1,27 @@
 import type { Skill } from './models';
 
-/** Areas of focus, not proficiency claims or third-party endorsements. */
+/** Technical competencies listed in the current CV. */
 export const skills: Skill[] = [
+  { category: 'Programming', items: ['Python', 'SQL', 'Java'] },
+  { category: 'AI / ML', items: ['PyTorch', 'Scikit-learn', 'OpenCV'] },
+  { category: 'Data', items: ['Pandas', 'NumPy', 'Matplotlib'] },
+  { category: 'Databases', items: ['MySQL', 'SQLite'] },
+  { category: 'MLOps', items: ['Databricks', 'MLflow', 'Docker', 'Git'] },
   {
-    category: 'Data engineering',
-    items: ['Python', 'SQL', 'Data pipelines', 'Data modelling'],
+    category: 'Web',
+    items: ['React', 'Angular', 'JavaScript', 'TypeScript'],
   },
   {
-    category: 'Artificial intelligence',
-    items: ['Machine learning', 'Computer vision', 'RAG', 'Model evaluation'],
-  },
-  {
-    category: 'Software engineering',
-    items: ['TypeScript', 'React', 'API design', 'Git'],
-  },
-  {
-    category: 'Infrastructure',
-    items: ['Linux', 'Docker', 'Networking', 'Automation'],
+    category: 'Professional',
+    items: [
+      'Teamwork',
+      'Flexibility',
+      'Reliability',
+      'Analytical Thinking',
+      'Problem Solving',
+      'Time Management',
+      'Communication',
+      'Open-mindedness',
+    ],
   },
 ];

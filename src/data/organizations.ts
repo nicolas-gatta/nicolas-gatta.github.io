@@ -1,10 +1,12 @@
 import { experiences } from './experience';
+import type { Organization } from './models';
 
-/** These labels describe the supplied representative timeline, not verified employment. */
-export const organizations = [...experiences]
+/** Organizations and relationships sourced from the current CV. */
+export const organizations: Organization[] = [...experiences]
   .reverse()
-  .map(({ id, company, isPlaceholder }) => ({
+  .map(({ id, company, role, period, isPlaceholder }) => ({
     id,
-    name: company,
+    name: id === 'ibm' ? 'IBM' : company,
+    relationship: `${role} · ${period}`,
     isPlaceholder,
   }));

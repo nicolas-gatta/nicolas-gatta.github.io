@@ -13,7 +13,7 @@
 .orgIntro > span {
   display: block;
   font-size: 8px;
-  color: #64716d;
+  color: var(--subtle);
   letter-spacing: 0;
   margin-top: 4px;
 }
@@ -23,7 +23,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 35px;
-  color: #5c6667;
+  color: var(--muted);
 }
 .ibm {
   font-size: 37px;
@@ -33,8 +33,8 @@
   background: repeating-linear-gradient(
     transparent 0px,
     transparent 3px,
-    #5c6667 3px,
-    #5c6667 5px
+    var(--muted) 3px,
+    var(--muted) 5px
   );
   background-clip: text;
   -webkit-background-clip: text;
@@ -51,16 +51,6 @@
   font-weight: 600;
   font-family: Georgia, serif;
   font-style: italic;
-}
-.airport {
-  font-size: 11px;
-  line-height: 1.5;
-  letter-spacing: -0.02em;
-  max-width: 145px;
-}
-.airport strong {
-  font-size: 13px;
-  font-weight: 550;
 }
 .section {
   position: relative;
@@ -92,10 +82,10 @@
 .aboutCopy > p {
   font-size: 13px;
   line-height: 1.9;
-  color: #5b6870;
+  color: var(--muted);
 }
 .aboutCopy > p:first-child {
-  color: #30383b;
+  color: var(--ink);
 }
 .identity {
   display: flex;
@@ -106,7 +96,7 @@
   border-top: 1px solid var(--line);
 }
 .identity > span {
-  color: #5b6874;
+  color: var(--muted);
   font: 8px var(--mono);
   letter-spacing: 0.07em;
 }
@@ -115,7 +105,7 @@
   gap: 6px;
   align-items: center;
   margin-top: 9px;
-  color: #323c3f;
+  color: var(--ink);
   font:
     10px 'Inter Variable',
     sans-serif;
@@ -124,7 +114,7 @@
 .identity i {
   height: 4px;
   width: 4px;
-  background: #4e8974;
+  background: #2f806d;
   border-radius: 50%;
 }
 .focusGrid {
@@ -144,12 +134,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #4d7e88;
+  color: var(--accent-dark);
   margin-bottom: 24px;
 }
 .focusItem > div > span {
   font: 9px var(--mono);
-  color: #5b6874;
+  color: var(--muted);
 }
 .focusItem h3 {
   font-size: 13px;
@@ -159,7 +149,7 @@
 }
 .focusItem p {
   font-size: 10px;
-  color: #637071;
+  color: var(--muted);
   margin: 0;
 }
 .sectionTop {
@@ -189,7 +179,7 @@
 }
 .timeline {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   margin-top: 42px;
 }
 .milestone button {
@@ -208,14 +198,14 @@
   align-items: center;
   width: 100%;
   padding-right: 30px;
-  color: #6f7b79;
+  color: var(--muted);
   font-size: 35px;
   letter-spacing: -0.07em;
   font-weight: 400;
 }
 .year > span {
   font: 7px var(--mono);
-  color: #5b6874;
+  color: var(--subtle);
   letter-spacing: 0.05em;
 }
 .timelinePoint {
@@ -224,21 +214,21 @@
   width: 100%;
   margin-block: 24px;
   height: 1px;
-  background: #c7d2cc;
+  background: var(--line-strong);
 }
 .timelinePoint > i {
   position: absolute;
   width: 9px;
   height: 9px;
-  background: #f4f5f2;
-  border: 1px solid #8ea9a7;
+  background: var(--background);
+  border: 1px solid var(--line-strong);
   border-radius: 50%;
   transition:
     background 0.2s,
     box-shadow 0.2s;
 }
 .milestone:last-child .timelinePoint {
-  background: linear-gradient(90deg, #c7d2cc, transparent);
+  background: linear-gradient(90deg, var(--line-strong), transparent);
 }
 .milestone button:hover .timelinePoint > i,
 .milestoneActive .timelinePoint > i {
@@ -260,7 +250,7 @@
   letter-spacing: -0.02em;
 }
 .timelineAction {
-  color: #627272;
+  color: var(--muted);
   font: 9px var(--mono);
   display: flex;
   align-items: center;
@@ -275,13 +265,13 @@
   display: flex;
   align-items: flex-start;
   gap: 23px;
-  background: #eaf0eb;
+  background: var(--surface-raised);
   padding: 25px;
   margin-top: 30px;
   border-left: 2px solid var(--accent);
 }
 .experienceCard > svg {
-  color: #477885;
+  color: var(--accent);
   flex-shrink: 0;
   margin-top: 4px;
 }
@@ -302,7 +292,7 @@
 }
 .contentNote {
   font: 9px/1.8 var(--mono);
-  color: #5b6874;
+  color: var(--muted);
   margin-top: 28px;
   margin-bottom: 0;
 }
@@ -317,17 +307,17 @@
   transition:
     border-color 0.2s,
     transform 0.3s;
-  background: #f8f9f550;
+  background: var(--surface);
   border-radius: 2px;
   overflow: hidden;
 }
 .project:hover {
-  border-color: #90b7bd;
+  border-color: var(--accent);
   transform: translateY(-4px);
 }
 .projectImage {
   position: relative;
-  background: #eaf0e9;
+  background: var(--surface-raised);
   border-bottom: 1px solid var(--line);
   aspect-ratio: 1.55;
   overflow: hidden;
@@ -349,13 +339,13 @@
   right: 17px;
   display: flex;
   justify-content: space-between;
-  color: #58706c;
+  color: var(--muted);
   font: 8px var(--mono);
   letter-spacing: 0.04em;
   z-index: 1;
 }
 .projectLabel > span {
-  color: #3e7887;
+  color: var(--accent);
   font-size: 16px;
   line-height: 1;
 }
@@ -365,7 +355,7 @@
 .projectCategory {
   font: 8px var(--mono);
   text-transform: uppercase;
-  color: #536c64;
+  color: var(--muted);
   letter-spacing: 0.05em;
 }
 .projectInfo h3 {
@@ -378,7 +368,7 @@
   margin: 8px 0 10px;
 }
 .projectInfo h3 svg {
-  color: #57797e;
+  color: var(--accent);
   transition: transform 0.2s;
 }
 .project:hover h3 svg {
@@ -409,32 +399,32 @@
   margin-top: 18px;
   padding-block: 16px;
   font: 8px var(--mono);
-  color: #627370;
+  color: var(--muted);
 }
 .projectBottom > span:last-child {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #35565e;
+  color: var(--accent);
 }
 .cvCallout {
   display: flex;
   align-items: center;
   gap: 28px;
   padding: 36px;
-  border: 1px solid #cbd8d2;
-  background: #edf1eb;
+  border: 1px solid var(--line-strong);
+  background: var(--surface-raised);
   margin-top: 45px;
 }
 .cvIcon {
   width: 60px;
   height: 70px;
-  border: 1px solid #b9cac6;
+  border: 1px solid var(--line-strong);
   display: grid;
   place-items: center;
-  color: #52828a;
+  color: var(--accent);
   flex-shrink: 0;
-  background: #f4f5f2;
+  background: var(--surface);
 }
 .cvCallout .eyebrow {
   font-size: 8px;
@@ -465,7 +455,7 @@
   gap: 7px;
   font: 7px var(--mono);
   letter-spacing: 0.06em;
-  color: #5b6874;
+  color: var(--muted);
 }
 .labHeading {
   display: flex;
@@ -478,21 +468,21 @@
   gap: 24px;
 }
 .labCard {
-  border: 1px solid #d3ddd5;
+  border: 1px solid var(--line);
   position: relative;
-  background: #edf1eb;
+  background: var(--surface-raised);
   padding: 18px 24px 24px;
   overflow: hidden;
   transition: border-color 0.2s;
 }
 .labCard:hover {
-  border-color: #7fadb8;
+  border-color: var(--accent);
 }
 .labCardTop {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #49686b;
+  color: var(--muted);
   font: 8px var(--mono);
   letter-spacing: 0.07em;
 }
@@ -568,12 +558,6 @@
   .google,
   .takeda {
     font-size: 24px;
-  }
-  .airport {
-    font-size: 9px;
-  }
-  .airport strong {
-    font-size: 11px;
   }
   .section {
     padding-block: 75px;
@@ -697,7 +681,7 @@
     margin: 0;
   }
   .milestone:last-child .timelinePoint {
-    background: linear-gradient(#c7d2cc, transparent);
+    background: linear-gradient(var(--line-strong), transparent);
   }
   .timelinePoint > i {
     top: 7px;
@@ -797,8 +781,11 @@
   .takeda {
     font-size: 22px;
   }
-  .airport strong {
-    font-size: 9px;
+  .takeda {
+    max-width: 112px;
+    font-size: 16px;
+    line-height: 1.15;
+    text-align: center;
   }
   .aboutGrid h2 {
     font-size: 34px;

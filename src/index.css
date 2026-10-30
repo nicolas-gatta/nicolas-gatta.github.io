@@ -15,18 +15,27 @@
     BlinkMacSystemFont,
     'Segoe UI',
     sans-serif;
-  color: #17191c;
-  background: #f4f5f2;
+  color: #f3f5f6;
+  background: #080b0e;
+  color-scheme: dark;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  --ink: #17191c;
-  --muted: #5b6874;
-  --accent: #35a6c8;
-  --accent-dark: #15718d;
+  --ink: #f3f5f6;
+  --muted: #a9b4bb;
+  --subtle: #84939c;
+  --accent: #42c7e8;
+  --accent-dark: #69d5eb;
   --highlight: #a7e8f2;
-  --background: #f4f5f2;
-  --line: #dce0dd;
+  --background: #080b0e;
+  --surface: #0f1418;
+  --surface-raised: #171e24;
+  --surface-hover: #212a31;
+  --line: #26343d;
+  --line-strong: #3c5260;
+  --light-background: #e7e5df;
+  --light-surface: #f3f1eb;
+  --light-ink: #161a1d;
   --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
 }
 * {
@@ -40,6 +49,8 @@ body {
   margin: 0;
   min-width: 320px;
   line-height: 1.6;
+  background: var(--background);
+  color: var(--ink);
 }
 button,
 input,
@@ -83,11 +94,11 @@ button:disabled {
   cursor: not-allowed;
 }
 ::selection {
-  color: #17191c;
-  background: #a7e8f2;
+  color: #10242c;
+  background: var(--highlight);
 }
 :focus-visible {
-  outline: 2px solid #15718d;
+  outline: 2px solid var(--highlight);
   outline-offset: 5px;
   border-radius: 2px;
 }
@@ -133,7 +144,7 @@ main:focus {
   align-items: center;
   justify-content: center;
   padding: 12px 21px;
-  border: 1px solid #cbd1ce;
+  border: 1px solid var(--line-strong);
   background: transparent;
   font-size: 12px;
   line-height: 1.5;
@@ -145,21 +156,21 @@ main:focus {
     transform 0.2s;
 }
 .button:hover {
-  background: #e8ece8;
-  border-color: #a1aca9;
+  background: var(--surface-hover);
+  border-color: var(--accent);
 }
 .button svg {
   width: 15px;
   height: 15px;
 }
 .button-primary {
-  background: var(--ink);
-  color: #fff;
-  border-color: var(--ink);
+  background: #c0eaf0;
+  color: #10242c;
+  border-color: #c0eaf0;
 }
 .button-primary:hover {
-  background: #303b3f;
-  border-color: #303b3f;
+  background: #e0f8fa;
+  border-color: #e0f8fa;
 }
 .tag {
   padding: 4px 9px;

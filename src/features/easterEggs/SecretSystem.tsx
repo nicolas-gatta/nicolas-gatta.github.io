@@ -136,13 +136,9 @@ export default function SecretSystem() {
       const routes: Partial<Record<TerminalAction, string>> = {
         projects: '/projects',
         cv: '/cv',
-        cars: '/lab/garage',
-        homelab: '/lab/computer',
       };
       const route = routes[action];
       if (route) {
-        if (action === 'cars') discover('petrolhead', 'petrolhead');
-        if (action === 'homelab') discover('sysadmin', 'sysadmin');
         setTerminalOpen(false);
         navigate(route);
       }
