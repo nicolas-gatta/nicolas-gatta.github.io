@@ -1,0 +1,105 @@
+.controls {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: #d4e5e9;
+  overflow: hidden;
+}
+.controls::backdrop {
+  background: transparent;
+}
+.identity {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  color: #bceef2;
+  text-align: center;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.identity strong {
+  font:
+    500 clamp(42px, 8vw, 104px) / 0.9 var(--mono);
+  letter-spacing: 0.16em;
+  padding-left: 0.16em;
+  text-shadow:
+    0 0 18px #42c7e866,
+    0 0 55px #42c7e833;
+}
+.identityMeta {
+  color: #7faab4;
+  font: 9px var(--mono);
+  letter-spacing: 0.18em;
+}
+.identityRule {
+  width: min(260px, 42vw);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #55d4ed, transparent);
+  box-shadow: 0 0 10px #42c7e866;
+}
+.controlBar {
+  position: absolute;
+  bottom: max(32px, env(safe-area-inset-bottom));
+  left: max(40px, env(safe-area-inset-left));
+  right: max(40px, env(safe-area-inset-right));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sound,
+.skip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 44px;
+  font: 10px var(--mono);
+  letter-spacing: 0.12em;
+  background: #080b0ee6;
+  color: #b4c9ce;
+  border: 1px solid #28414a;
+  border-radius: 2px;
+  padding: 11px 15px;
+}
+.sound {
+  border-color: transparent;
+}
+.skip {
+  min-width: 105px;
+}
+.sound:hover,
+.skip:hover {
+  color: #e6f5f6;
+  border-color: #58b9d0;
+}
+.sound:disabled {
+  color: #9caeb2;
+  cursor: default;
+}
+.sound:focus-visible,
+.skip:focus-visible {
+  outline: 2px solid #73d9ed;
+  outline-offset: 5px;
+}
+@media (max-width: 600px) {
+  .controlBar {
+    left: 18px;
+    right: 18px;
+    bottom: 20px;
+  }
+  .sound,
+  .skip {
+    font-size: 9px;
+  }
+}

@@ -36,3 +36,7 @@ dist-ssr
 
 # Build
 *.tsbuildinfo
+
+# Local browser QA artifacts
+.qa/
+test-results/
