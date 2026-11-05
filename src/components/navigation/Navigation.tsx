@@ -1,21 +1,68 @@
 import { useEffect, useRef, useState } from 'react';
-import { Download, Menu, X } from 'lucide-react';
+import { Download, Menu, Moon, Sun, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { profile } from '../../data/profile';
+import { useTheme } from '../../features/theme/useTheme';
 import styles from './Navigation.module.css';
 
 const links = [
-  { label: 'About', to: '/?section=about' },
-  { label: 'Experience', to: '/?section=experience' },
-  { label: 'Projects', to: '/?section=projects' },
-  { label: 'CV', to: '/?section=cv' },
-  { label: 'Contact', to: '/?section=contact' },
+  { label: 'Home', section: 'home', to: '/' },
+  { label: 'About', section: 'about', to: '/?section=about' },
+  { label: 'Experience', section: 'experience', to: '/?section=experience' },
+  { label: 'Projects', section: 'projects', to: '/?section=projects' },
+  { label: 'CV', section: 'cv', to: '/?section=cv' },
+  { label: 'Contact', section: 'contact', to: '/?section=contact' },
 ];
 export default function Navigation() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const toggle = useRef<HTMLButtonElement>(null);
+  const themeToggle = useRef<HTMLButtonElement>(null);
+  const { theme, toggleTheme } = useTheme();
   const nav = useRef<HTMLElement>(null);
+  const [activeSection, setActiveSection] = useState('home');
+  useEffect(() => {
+    if (location.pathname !== '/') return;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const headerHeight =
+        nav.current?.closest('header')?.getBoundingClientRect().height ?? 85;
+      const readingLine =
+        headerHeight + Math.min(window.innerHeight * 0.2, 128);
+      let current = 'home';
+      for (const link of links) {
+        const section = document.getElementById(link.section);
+        if (section) {
+          const contentTop = section.getBoundingClientRect().top +
+            (parseFloat(getComputedStyle(section).paddingTop) || 0);
+          if (contentTop <= readingLine) current = link.section;
+        }
+      }
+      if (
+        window.scrollY > 0 &&
+        window.innerHeight + window.scrollY >=
+          document.documentElement.scrollHeight - 2
+      )
+        current = 'contact';
+      setActiveSection(current);
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    const observer = new ResizeObserver(schedule);
+    const main = document.getElementById('main-content');
+    if (main) observer.observe(main);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      observer.disconnect();
+    };
+  }, [location.pathname]);
   useEffect(() => {
     setOpen(false);
   }, [location]);
@@ -36,6 +83,7 @@ export default function Navigation() {
       }
       if (e.key === 'Tab') {
         const items = [
+          themeToggle.current,
           toggle.current,
           ...Array.from(
             nav.current?.querySelectorAll<HTMLAnchorElement>('a') || []
@@ -75,16 +123,29 @@ export default function Navigation() {
             _
           </span>
         </Link>
-        <button
-          ref={toggle}
-          className={styles.toggle}
-          aria-label={open ? 'Close navigation' : 'Open navigation'}
-          aria-expanded={open}
-          aria-controls="main-navigation"
-          onClick={() => setOpen(!open)}
-        >
-          {open ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        <div className={styles.controls}>
+          <button
+            ref={themeToggle}
+            className={styles.themeToggle}
+            type="button"
+            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            aria-pressed={theme === 'light'}
+            onClick={toggleTheme}
+          >
+            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+          <button
+            ref={toggle}
+            className={styles.toggle}
+            aria-label={open ? 'Close navigation' : 'Open navigation'}
+            aria-expanded={open}
+            aria-controls="main-navigation"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
         <nav
           ref={nav}
           id="main-navigation"
@@ -96,11 +157,14 @@ export default function Navigation() {
               key={link.label}
               to={link.to}
               aria-current={
-                (location.pathname !== '/' &&
-                  location.pathname.startsWith(link.to)) ||
-                location.pathname + location.search === link.to
-                  ? 'page'
-                  : undefined
+                location.pathname === '/'
+                  ? activeSection === link.section
+                    ? 'location'
+                    : undefined
+                  : location.pathname === `/${link.section}` ||
+                      location.pathname.startsWith(`/${link.section}/`)
+                    ? 'page'
+                    : undefined
               }
               className={styles.navLink}
             >

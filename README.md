@@ -28,7 +28,7 @@ Professional experience, education, certifications, technical competencies and p
 | Name, role, statement, location, social profiles, email and PDF configuration | `src/data/profile.ts`                       |
 | Professional data models                                                      | `src/data/models.ts`                        |
 | Experience, responsibilities and technologies                                 | `src/data/experience.ts`                    |
-| Organization labels (derived from the timeline)                               | `src/data/organizations.ts`                 |
+| Airship organization logos (derived from the timeline)                        | `src/data/organizations.ts`                 |
 | Projects, architecture, results, screenshots and optional GitHub URLs         | `src/data/projects.ts`                      |
 | Skill groups                                                                  | `src/data/skills.ts`                        |
 | Education                                                                     | `src/data/education.ts`                     |
@@ -51,8 +51,8 @@ The tradeoff is route-level search indexing. The static document has the request
 ### Deploy
 
 1. In GitHub **Settings → Pages → Build and deployment**, select **GitHub Actions**.
-2. Push to `main`, or run the workflow manually.
-3. The workflow installs the lockfile with `npm ci`, checks TypeScript, builds `dist`, uploads the Pages artifact and deploys it. Pull requests validate the build without deploying.
+2. Publish a GitHub release for the version you want to deploy.
+3. Publishing the release runs the full workflow: install the lockfile with `npm ci`, check TypeScript, build `dist`, upload the Pages artifact and deploy it. Pushes and pull requests do not trigger the workflow.
 
 The Vite configuration automatically uses `/` for repositories ending in `.github.io` and `/repository-name/` for project repositories, using `GITHUB_REPOSITORY` in Actions. No backend secrets are needed.
 
@@ -81,9 +81,13 @@ The opening constructs an original digital environment from a point of cyan ligh
 - The retained Lab scenes use capped DPR, demand-based rendering and a paused frame loop, ready for a later iteration without affecting the current public bundle.
 - Scene/import/context failures recover to the illustrated interface. All OS actions and car specifications remain available as ordinary React controls. The optional shared Three.js chunk is large by design; Vite may report a size warning for it. It is never requested by the homepage or CV.
 - Only one self-hosted Inter Latin variable WOFF2 is used and preloaded. System fonts remain available as fallbacks.
-- Motion honors the OS preference. The full opening lasts approximately 6.8 seconds on the first visit; a new homepage load in the same session uses a brief 1.6-second horizon/grid pulse. Internal route navigation does not replay the sequence. Skip and Escape finish it immediately. Direct section links and reduced-motion visitors go straight to the completed hero. Optional synthesized sound starts only after a visitor explicitly enables it, and stops when the sequence ends or the page is left; no audio autoplays.
+- Motion honors the OS preference. The full opening lasts approximately 6.8 seconds on the first visit; a new homepage load in the same session uses a brief 1.6-second horizon/grid pulse. Internal route navigation does not replay the sequence. Skip and Escape finish it immediately. Direct section links and reduced-motion visitors go straight to the completed hero. Optional sound starts only after a visitor explicitly enables it, and stops when the sequence ends or the page is left; no audio autoplays. The full opening includes the self-hosted robotic greeting “Identity Confirm. Welcome User.” alongside procedural ambience. The clip loads only after sound is enabled and plays when enough time remains for the whole line; the short return animation uses ambience only.
+
+The voice asset is `public/audio/connection-voice.wav`. To regenerate it on Windows with the Microsoft Zira desktop voice and Node installed, run `powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/generate-intro-voice.ps1`. The clip is included in the repository; deployment does not need speech tools or an external service.
 
 The favicon is `public/favicon.svg`. The social card is `public/images/social-preview.png`, with its editable SVG source beside it. Both metadata URL and base path are configurable; replace the social card when final branding is ready.
+
+A small illustrated airship floats over the completed hero city. Its screen cycles through the IBM, Google and Takeda logos every five seconds and links to the experience timeline. The logo controls allow manual selection and pausing. Hovering, keyboard focus, hidden tabs and leaving the viewport pause the animation; reduced-motion visitors get a static airship with manual logo selection. Local logo assets and their sources are in `public/images/organizations/`.
 
 ## Validation
 
@@ -114,7 +118,7 @@ Final local desktop Lighthouse checks in Chrome 156 (Windows, production preview
 
 The portfolio browser suite and cinematic checks cover phase continuity, the first scroll, session behavior, reduced motion, keyboard controls, canvas failure and explicit sound opt-in. The portfolio has also been verified under `/portfolio/`. TypeScript and production builds pass. For Lighthouse, run the **production preview** and choose Desktop. Scores depend on machine, browser, extensions and hosting; these are lab measurements, not guarantees for every device or a substitute for a full accessibility audit.
 
-During development, remove the session-storage key `ng:world-intro-seen:v1` and reload to replay the full opening. The opening clock lives in `src/features/intro/useWorldSequence.ts`; procedural geometry and construction timings live in `DigitalWorldRenderer.ts`. `DigitalHero.tsx` constructs the actual hero letters, so no duplicate title or page swap is needed. The first opening is 6.8 seconds, a session return is 1.6 seconds, and no asset download controls either duration.
+During development, remove the session-storage key `ng:world-intro-seen:v1` and reload to replay the full opening. The opening clock lives in `src/features/intro/useWorldSequence.ts`; procedural geometry and construction timings live in `DigitalWorldRenderer.ts`. `DigitalHero.tsx` constructs the actual hero letters, so no duplicate title or page swap is needed. The first opening is 6.8 seconds; a session return uses a 1.6-second pulse with a small cyan connection ring and “Welcome back” greeting. No asset download controls either duration.
 
 ## Exploring
 
@@ -142,4 +146,4 @@ scripts/
   deploy.yml          checks, build and native GitHub Pages deployment
 ```
 
-No publication is performed by local development commands. The Pages workflow deploys only when pushed or manually triggered on GitHub.
+No publication is performed by local development commands. The Pages workflow deploys only when a GitHub release is published.

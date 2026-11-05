@@ -4,10 +4,10 @@ export const certifications: Certification[] = [
   {
     issuer: 'Anthropic',
     credentials: [
-      'Claude Certified Developer – Foundations',
-      'Claude Certified Associate – Foundations',
-      'Claude Certified Architect – Foundations',
-      'Claude Partner Badge – Claude Code',
+      'Claude Certified Developer - Foundations',
+      'Claude Certified Associate - Foundations',
+      'Claude Certified Architect - Foundations',
+      'Claude Partner Badge - Claude Code',
     ],
   },
   {

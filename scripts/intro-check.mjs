@@ -25,6 +25,30 @@ function watch(page) {
   page.on('pageerror', (error) => errors.push(error.message));
   return page;
 }
+async function trackVoice(context) {
+  await context.addInitScript(() => {
+    window.__introVoiceEvents = [];
+    const start = AudioBufferSourceNode.prototype.start;
+    const stop = AudioBufferSourceNode.prototype.stop;
+    AudioBufferSourceNode.prototype.start = function (...args) {
+      if (this.buffer && !this.loop) {
+        const record = {
+          duration: this.buffer.duration,
+          ended: false,
+          stopped: false,
+        };
+        this.__introVoiceRecord = record;
+        window.__introVoiceEvents.push(record);
+        this.addEventListener('ended', () => { record.ended = true; });
+      }
+      return start.apply(this, args);
+    };
+    AudioBufferSourceNode.prototype.stop = function (...args) {
+      if (this.__introVoiceRecord) this.__introVoiceRecord.stopped = true;
+      return stop.apply(this, args);
+    };
+  });
+}
 async function check(name, run) {
   await run();
   results.push(name);
@@ -134,7 +158,7 @@ try {
         'The completed hero must allow ordinary scrolling.'
       );
       await page.screenshot({ path: '.qa/intro/desktop-first-scroll.png' });
-      await page.getByRole('link', { name: 'View CV', exact: true }).click();
+      await page.getByRole('link', { name: 'View my CV', exact: true }).click();
       await page
         .getByRole('link', { name: 'Download PDF', exact: true })
         .waitFor();
@@ -196,18 +220,26 @@ try {
       await page
         .locator('[data-testid="digital-hero"][data-intro-variant="short"]')
         .waitFor();
+      const returnMark = page.getByTestId('return-intro-mark');
+      assert.equal(await returnMark.locator('strong').textContent(), 'WELCOME BACK');
+      assert.equal(await page.getByTestId('identity-intro-mark').count(), 0);
+      const labelSize = await returnMark.locator('strong').evaluate((label) =>
+        parseFloat(getComputedStyle(label).fontSize)
+      );
+      assert(labelSize <= 16, 'Reloads should show a compact greeting.');
       await waitForCompletedHero(page);
       assert(
         Date.now() - started < 4000,
         'Returning visitors should get only the brief version.'
       );
       await page
-        .getByRole('link', { name: 'Explore my work', exact: true })
+        .getByRole('link', { name: 'Projects', exact: true })
         .click();
+      await page.getByRole('link', { name: 'All projects', exact: true }).click();
       await page
         .getByRole('heading', { name: /Built with/, level: 1 })
         .waitFor();
-      await page.getByRole('link', { name: /N\.GATTA.*home/ }).click();
+      await page.getByRole('link', { name: /Nicolas Gatta.*home/ }).click();
       await waitForCompletedHero(page);
       assert.equal(
         await page
@@ -309,7 +341,7 @@ try {
       await page.goto(base);
       await skipButton(page).click();
       await waitForCompletedHero(page);
-      await page.getByRole('link', { name: 'View CV', exact: true }).click();
+      await page.getByRole('link', { name: 'View my CV', exact: true }).click();
       await page
         .getByRole('link', { name: 'Download PDF', exact: true })
         .waitFor();
@@ -323,6 +355,7 @@ try {
       const context = await browser.newContext({
         reducedMotion: 'no-preference',
       });
+      await trackVoice(context);
       await context.addInitScript(() => {
         window.__introAudioContexts = 0;
         const Original = window.AudioContext || window.webkitAudioContext;
@@ -338,6 +371,11 @@ try {
         }
       });
       const page = watch(await context.newPage());
+      const voiceRequests = [];
+      page.on('request', (request) => {
+        if (request.url().endsWith('/audio/connection-voice.wav'))
+          voiceRequests.push(request.url());
+      });
       await page.goto(base);
       const sound = page.getByRole('button', {
         name: 'Enable sound',
@@ -345,20 +383,49 @@ try {
       });
       await sound.waitFor();
       assert.equal(await page.evaluate(() => window.__introAudioContexts), 0);
+      assert.equal(voiceRequests.length, 0, 'Muted intros must not download speech.');
       await sound.click();
       await page
         .getByRole('button', { name: 'Mute sound', exact: true })
         .waitFor();
       assert.equal(await page.evaluate(() => window.__introAudioContexts), 1);
+      await page.waitForFunction(() => window.__introVoiceEvents.length === 1);
+      assert.equal(voiceRequests.length, 1);
+      assert(await page.evaluate(() => window.__introVoiceEvents[0].duration > 3));
       await page
         .getByRole('button', { name: 'Mute sound', exact: true })
         .click();
       await page
         .getByRole('button', { name: 'Enable sound', exact: true })
         .waitFor();
+      assert(await page.evaluate(() => window.__introVoiceEvents[0].stopped));
       await page.keyboard.press('Escape');
       await waitForCompletedHero(page);
       await context.close();
+    }
+  );
+
+  await check(
+    'The connection voice completes once, while skipping stops it immediately',
+    async () => {
+      for (const skip of [false, true]) {
+        const context = await browser.newContext({ reducedMotion: 'no-preference' });
+        await trackVoice(context);
+        const page = watch(await context.newPage());
+        await page.goto(base);
+        await page.getByRole('button', { name: 'Enable sound', exact: true }).click();
+        await page.waitForFunction(() => window.__introVoiceEvents.length === 1);
+        if (skip) {
+          await page.keyboard.press('Escape');
+          await page.waitForFunction(() => window.__introVoiceEvents[0].stopped);
+        } else {
+          await page.waitForFunction(() => window.__introVoiceEvents[0].ended);
+          assert.equal(await page.evaluate(() => window.__introVoiceEvents[0].stopped), false);
+        }
+        await waitForCompletedHero(page);
+        assert.equal(await page.evaluate(() => window.__introVoiceEvents.length), 1);
+        await context.close();
+      }
     }
   );
 

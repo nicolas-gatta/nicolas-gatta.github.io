@@ -8,7 +8,7 @@ const titles: Record<string, string> = {
   '/contact': 'Contact — Nicolas Gatta',
 };
 export default function RouteEffects() {
-  const { pathname, search } = useLocation();
+  const { pathname, search, key } = useLocation();
   useEffect(() => {
     document.title =
       titles[pathname] ||
@@ -21,7 +21,13 @@ export default function RouteEffects() {
       const scroll = () => {
         const target = document.getElementById(section);
         if (target) {
-          target.scrollIntoView({
+          const header = document.querySelector('header');
+          const headerHeight = header?.getBoundingClientRect().height ?? 85;
+          const padding = parseFloat(getComputedStyle(target).paddingTop) || 0;
+          window.scrollTo({
+            top:
+              window.scrollY + target.getBoundingClientRect().top +
+              padding - headerHeight - 18,
             behavior: window.matchMedia('(prefers-reduced-motion: reduce)')
               .matches
               ? 'instant'
@@ -35,6 +41,6 @@ export default function RouteEffects() {
     }
     window.scrollTo({ top: 0, behavior: 'instant' });
     document.getElementById('main-content')?.focus({ preventScroll: true });
-  }, [pathname, search]);
+  }, [pathname, search, key]);
   return null;
 }

@@ -51,8 +51,32 @@ try {
     assert.equal(pdf.status(), 200);
     assert((await pdf.body()).toString('ascii').startsWith('%PDF-'));
   });
+  await check('Airship logos, controls and experience link', async () => {
+    const airship = page.getByTestId('experience-airship');
+    await airship.waitFor();
+    assert.equal(await airship.getAttribute('data-running'), 'false');
+    await page.waitForFunction(() => [...document.querySelectorAll('[data-testid="experience-airship"] img')]
+      .every((image) => image.complete && image.naturalWidth > 0));
+    for (const name of ['IBM', 'Google', 'Takeda Pharmaceuticals']) {
+      await airship.getByRole('button', { name: `Show ${name} logo`, exact: true }).click();
+      assert.equal(await airship.getByRole('button', { name: `Show ${name} logo`, exact: true }).getAttribute('aria-pressed'), 'true');
+      assert.equal(await airship.getByRole('img', { name, exact: true }).count(), 1);
+    }
+    await airship.getByRole('button', { name: 'Pause company logos' }).click();
+    await airship.getByRole('button', { name: 'Play company logos' }).click();
+    await airship.getByRole('link', { name: 'View professional experience: Takeda Pharmaceuticals' }).click();
+    await page.waitForFunction(() => document.activeElement?.id === 'experience');
+    await page.getByRole('link', { name: /Nicolas Gatta.*home/ }).click();
+    await page.getByTestId('digital-hero').waitFor();
+  });
   await check('Timeline and section navigation', async () => {
     await page.getByRole('link', { name: 'Experience', exact: true }).click();
+    await page.waitForFunction(() => {
+      const section = document.getElementById('experience');
+      const contentTop = section.getBoundingClientRect().top +
+        parseFloat(getComputedStyle(section).paddingTop);
+      return Math.abs(contentTop - document.querySelector('header').getBoundingClientRect().bottom - 18) < 2;
+    });
     await page.getByRole('button', { name: /2026/ }).click();
     assert.equal(await page.locator('#experience-details').count(), 1);
     assert.equal(
@@ -61,7 +85,65 @@ try {
         .getAttribute('aria-expanded'),
       'true'
     );
-    assert((await page.locator('#experience').boundingBox()).y >= 70);
+    const gap = await page.locator('#experience').evaluate((section) => {
+      const contentTop = section.getBoundingClientRect().top +
+        parseFloat(getComputedStyle(section).paddingTop);
+      return contentTop - document.querySelector('header').getBoundingClientRect().bottom;
+    });
+    assert(Math.abs(gap - 18) < 2, `Unexpected section gap: ${gap}px`);
+  });
+  await check('Menu follows scrolling, repeated links and dedicated routes', async () => {
+    for (const [id, name] of [['about', 'About'], ['experience', 'Experience'], ['projects', 'Projects'], ['cv', 'CV'], ['contact', 'Contact'], ['experience', 'Experience']]) {
+      await page.locator(`#${id}`).evaluate((section) => section.scrollIntoView({ behavior: 'instant' }));
+      await page.waitForFunction((name) => document.querySelector('nav a[aria-current]')?.textContent === name, name);
+      assert.equal(await page.locator('nav a[aria-current]').count(), 1);
+    }
+    // The URL still points to Experience: clicking it again must scroll back.
+    await page.getByRole('link', { name: 'Experience', exact: true }).click();
+    await page.locator('#contact').evaluate((section) => section.scrollIntoView({ behavior: 'instant' }));
+    await page.getByRole('link', { name: 'Experience', exact: true }).click();
+    await page.waitForFunction(() => document.querySelector('nav a[aria-current]')?.textContent === 'Experience');
+    for (const [route, name] of [['projects/dermatrack', 'Projects'], ['cv', 'CV'], ['contact', 'Contact']]) {
+      await page.goto(`${base}#/${route}`);
+      await page.getByRole('heading', { level: 1 }).waitFor();
+      await page.waitForFunction((name) => document.querySelector('nav a[aria-current="page"]')?.textContent === name, name);
+      assert.equal(await page.getByRole('link', { name, exact: true }).getAttribute('aria-current'), 'page');
+    }
+  });
+  await check('Section trails build once, including after leaving Home', async () => {
+    const animated = await browser.newContext({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'no-preference' });
+    const scene = await animated.newPage();
+    scene.on('pageerror', (error) => errors.push(error.message));
+    await scene.goto(base);
+    await scene.getByRole('button', { name: 'Skip intro and explore the portfolio' }).click();
+    assert.equal(await scene.getByRole('link', { name: 'Explore my work', exact: true }).count(), 0);
+    assert.equal(await scene.getByRole('link', { name: 'View CV', exact: true }).count(), 0);
+    await scene.evaluate(() => {
+      window.sectionBuilds = {};
+      new MutationObserver((records) => {
+        for (const record of records) {
+          if (record.target.dataset.construction === 'drawing' && record.oldValue === 'pending') {
+            const id = record.target.id;
+            window.sectionBuilds[id] = (window.sectionBuilds[id] || 0) + 1;
+          }
+        }
+      }).observe(document.getElementById('main-content'), { subtree: true, attributes: true, attributeFilter: ['data-construction'], attributeOldValue: true });
+    });
+    for (const id of ['about', 'experience', 'projects', 'cv', 'contact']) {
+      await scene.locator(`#${id}`).evaluate((section) => section.scrollIntoView({ behavior: 'instant' }));
+      await scene.waitForFunction((id) => document.getElementById(id)?.dataset.construction === 'ready', id);
+    }
+    const builds = await scene.evaluate(() => window.sectionBuilds);
+    assert.deepEqual(builds, { about: 1, experience: 1, projects: 1, cv: 1, contact: 1 });
+    await scene.locator('#about').evaluate((section) => section.scrollIntoView({ behavior: 'instant' }));
+    await scene.waitForTimeout(150);
+    assert.deepEqual(await scene.evaluate(() => window.sectionBuilds), builds);
+    await scene.getByRole('link', { name: 'All projects', exact: true }).click();
+    await scene.getByRole('heading', { level: 1, name: /Built with/ }).waitFor();
+    await scene.getByRole('link', { name: /Nicolas Gatta.*home/ }).click();
+    await scene.getByTestId('digital-hero').waitFor();
+    assert.deepEqual(await scene.locator('[data-construction]').evaluateAll((sections) => sections.map((section) => section.dataset.construction)), Array(5).fill('ready'));
+    await animated.close();
   });
   await check('Project filters, search and detail refresh', async () => {
     await page.goto(`${base}#/projects`);
@@ -296,7 +378,8 @@ try {
             ?.getAttribute('data-intro-active') === 'false'
       );
       assert.equal(await intro.locator('dialog[open]').count(), 0);
-      await intro.getByRole('link', { name: 'Explore my work' }).click();
+      await intro.getByRole('link', { name: 'Projects', exact: true }).click();
+      await intro.getByRole('link', { name: 'All projects', exact: true }).click();
       await intro
         .getByRole('heading', { name: /Built with/, level: 1 })
         .waitFor();

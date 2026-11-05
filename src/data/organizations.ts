@@ -7,6 +7,7 @@ export const organizations: Organization[] = [...experiences]
   .map(({ id, company, role, period, isPlaceholder }) => ({
     id,
     name: id === 'ibm' ? 'IBM' : company,
+    logo: `${import.meta.env.BASE_URL}images/organizations/${id}.${id === 'takeda' ? 'png' : 'svg'}`,
     relationship: `${role} · ${period}`,
     isPlaceholder,
   }));

@@ -13,13 +13,14 @@ import {
   useTransform,
   type MotionValue,
 } from 'framer-motion';
-import { ArrowDown, ArrowUpRight, FileText, MapPin } from 'lucide-react';
+import { ArrowDown, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Intro from '../../features/intro/Intro';
 import { useWorldSequence } from '../../features/intro/useWorldSequence';
 import { useWorldSound } from '../../features/intro/useWorldSound';
 import { profile } from '../../data/profile';
 import styles from './DigitalHero.module.css';
+import ExperienceAirship from './ExperienceAirship';
 
 const DigitalWorld = lazy(() => import('../../features/intro/DigitalWorld'));
 class WorldBoundary extends Component<
@@ -113,6 +114,7 @@ export default function DigitalHero() {
     progress,
     active,
     reducedMotion,
+    variant,
   });
   const detailsOpacity = useTransform(progress, [0.79, 0.97], [0, 1]);
   const detailsY = useTransform(progress, [0.79, 1], [15, 0]);
@@ -135,7 +137,6 @@ export default function DigitalHero() {
     const update = () => {
       const rect = section.current?.getBoundingClientRect();
       if (!rect) return;
-      document.documentElement.dataset.worldTheme = 'dark';
       scrollProgress.set(
         Math.min(1, Math.max(0, -rect.top / Math.max(1, rect.height * 0.8)))
       );
@@ -151,7 +152,6 @@ export default function DigitalHero() {
       cancelAnimationFrame(frame);
       window.removeEventListener('scroll', schedule);
       window.removeEventListener('resize', schedule);
-      delete document.documentElement.dataset.worldTheme;
       delete document.documentElement.dataset.worldIntro;
     };
   }, [scrollProgress]);
@@ -188,8 +188,9 @@ export default function DigitalHero() {
         </WorldBoundary>
       </div>
       <div className={styles.shade} aria-hidden="true" />
+      {!active && <ExperienceAirship />}
       <motion.div
-        className={`page-shell ${styles.inner}`}
+        className={styles.inner}
         style={{ borderColor: guideBorder }}
       >
         <motion.div
@@ -250,16 +251,6 @@ export default function DigitalHero() {
                 <span>AI / DATA / SOFTWARE</span>
               </div>
               <p className={styles.statement}>{profile.statement}</p>
-              <div className={styles.actions}>
-                <Link className={`button ${styles.primary}`} to="/projects">
-                  Explore my work
-                  <ArrowUpRight size={15} />
-                </Link>
-                <Link className={`button ${styles.secondary}`} to="/cv">
-                  <FileText size={14} />
-                  View CV
-                </Link>
-              </div>
             </motion.div>
           </div>
           <motion.div
@@ -299,6 +290,7 @@ export default function DigitalHero() {
       <Intro
         active={active}
         progress={progress}
+        variant={variant}
         onSkip={finish}
         soundEnabled={enabled}
         soundAvailable={available}

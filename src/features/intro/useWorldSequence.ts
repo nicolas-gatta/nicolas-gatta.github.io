@@ -4,6 +4,7 @@ import { useMotionValue, useReducedMotion } from 'framer-motion';
 import { readSession, writeSession } from '../easterEggs/storage';
 
 export type WorldVariant = 'full' | 'short' | 'still';
+export const worldDurations = { full: 6800, short: 1600, still: 0 };
 export const worldSessionKey = 'ng:world-intro-seen:v1';
 const enteredAtHome =
   !window.location.hash || /^#\/(?:\?|$)/.test(window.location.hash);
@@ -38,7 +39,7 @@ export function useWorldSequence() {
     presentedInDocument = true;
     if (!active || variant === 'still') return;
     writeSession(worldSessionKey, true);
-    const duration = variant === 'short' ? 1600 : 6800;
+    const duration = worldDurations[variant];
     let frame = 0;
     let last = performance.now();
     const tick = (now: number) => {

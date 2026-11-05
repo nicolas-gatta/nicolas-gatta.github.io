@@ -8,6 +8,7 @@ import {
   Mail,
 } from 'lucide-react';
 import { profile } from '../../data/profile';
+import ConstructionGuide from '../../components/animations/ConstructionGuide';
 import styles from './Contact.module.css';
 
 export default function ContactSection({
@@ -34,6 +35,7 @@ export default function ContactSection({
       tabIndex={-1}
       aria-labelledby="contact-title"
     >
+      {!standalone && <ConstructionGuide />}
       <p className="eyebrow">
         {standalone ? 'START A CONVERSATION' : '05 / NEXT CONNECTION'}
       </p>

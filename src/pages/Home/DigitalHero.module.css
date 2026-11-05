@@ -46,6 +46,7 @@
 }
 .inner {
   min-height: inherit;
+  padding-inline: var(--page-gutter);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -191,28 +192,6 @@
   line-height: 1.6;
   margin-bottom: 30px;
 }
-.actions {
-  display: flex;
-  gap: 12px;
-}
-.actions .primary {
-  background: #c0eaf0;
-  border-color: #c0eaf0;
-  color: #10242c;
-}
-.actions .primary:hover {
-  background: #e0f6f8;
-  border-color: #e0f6f8;
-}
-.actions .secondary {
-  background: #0c151ccc;
-  color: #d7e6eb;
-  border-color: #38515d;
-}
-.actions .secondary:hover {
-  background: #142831;
-  border-color: #80b9c8;
-}
 .hero a:focus-visible {
   outline-color: #a7e8f2;
 }
@@ -254,7 +233,8 @@
   justify-content: space-between;
   align-items: center;
   gap: 20px;
-  padding: 20px 28px;
+  margin-inline: calc(0px - var(--page-gutter));
+  padding: 20px calc(var(--page-gutter) + 28px);
   border-top: 1px solid #24383f;
   font: 8px var(--mono);
   color: #a5bdc5;
@@ -387,20 +367,13 @@
     font-size: 20px;
     max-width: 320px;
   }
-  .actions {
-    gap: 10px;
-  }
-  .actions a {
-    font-size: 11px;
-    padding-inline: 17px;
-  }
   .worldNote {
     right: 5px;
     bottom: 36px;
     font-size: 7px;
   }
   .foot {
-    padding: 20px 0;
+    padding: 20px var(--page-gutter);
     gap: 14px;
   }
   .foot > span {
@@ -440,9 +413,6 @@
   .statement {
     font-size: 18px;
   }
-  .actions a {
-    padding-inline: 13px;
-  }
   .main {
     padding-top: 65px;
     min-height: 620px;
@@ -456,4 +426,44 @@
     will-change: auto;
     transform: none !important;
   }
+}
+:global(html[data-theme='light']) .hero[data-intro-active='false'] {
+  background: var(--background);
+  color: var(--ink);
+}
+:global(html[data-theme='light']) .hero[data-intro-active='false'] .shade {
+  background:
+    linear-gradient(90deg, #f3f5f466, #f3f5f422 40%, transparent 70%),
+    linear-gradient(0deg, #f3f5f4cc, transparent 20%, transparent 85%, #f3f5f455);
+}
+:global(html[data-theme='light']) .hero[data-intro-active='false'] .inner {
+  border-color: var(--line) !important;
+}
+:global(html[data-theme='light']) .hero[data-intro-active='false'] :is(
+  .metadata, .location, .statement, .role span:last-child,
+  .worldNote, .worldCoordinates, .foot
+) {
+  color: var(--muted);
+}
+:global(html[data-theme='light']) .hero[data-intro-active='false'] .word:first-child::before {
+  color: var(--muted);
+}
+:global(html[data-theme='light']) .hero[data-intro-active='false'] .letterFill {
+  color: var(--ink);
+}
+:global(html[data-theme='light']) .hero[data-intro-active='false'] .word:first-child .letterFill {
+  color: transparent;
+  -webkit-text-stroke-color: #416d7c;
+}
+:global(html[data-theme='light']) .hero[data-intro-active='false'] .worldNote strong {
+  color: var(--ink);
+}
+:global(html[data-theme='light']) .hero[data-intro-active='false'] :is(.period, .scrollMark) {
+  color: var(--accent);
+}
+:global(html[data-theme='light']) .hero[data-intro-active='false'] :is(.foot, .role span:last-child) {
+  border-color: var(--line-strong);
+}
+:global(html[data-theme='light']) .hero[data-intro-active='false'] a:focus-visible {
+  outline-color: var(--accent);
 }

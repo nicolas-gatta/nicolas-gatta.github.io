@@ -1,0 +1,143 @@
+.airship {
+  --airship-highlight: #385563;
+  --airship-body: #172b35;
+  --airship-shadow: #0a171e;
+  --airship-line: #709eaa;
+  position: absolute;
+  top: 12%;
+  right: clamp(48px, 8vw, 150px);
+  z-index: 3;
+  width: clamp(260px, 25vw, 380px);
+  aspect-ratio: 440 / 270;
+  animation: appear 1s ease-out both;
+}
+.flight {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  animation: float 14s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.airship[data-running='true'] .flight,
+.airship[data-running='true'] .propeller {
+  animation-play-state: running;
+}
+.drawing {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 8px 14px #00000022);
+}
+.propeller {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: spin 0.35s linear infinite;
+  animation-play-state: paused;
+}
+.screen {
+  position: absolute;
+  left: 32.27%;
+  top: 60.74%;
+  width: 31.82%;
+  height: 23.33%;
+  overflow: hidden;
+  border: 1px solid #a1c5ca;
+  border-radius: 2px;
+  background: #fff;
+  box-shadow: 0 0 14px #70c9df18;
+}
+.screen img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 12% 21%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.screen img[data-active='true'] {
+  opacity: 1;
+}
+.screen img.takeda {
+  padding: 0;
+  transform: scale(1.35);
+}
+.controls {
+  position: absolute;
+  top: 88%;
+  left: 48.2%;
+  display: flex;
+  transform: translateX(-50%);
+  gap: 2px;
+  color: var(--muted);
+}
+.controls button {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+}
+.controls button:hover,
+.controls button:focus-visible {
+  color: var(--accent);
+  background: var(--surface-hover);
+}
+.dot {
+  width: 4px;
+  height: 4px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+.controls button[aria-pressed='true'] .dot {
+  color: var(--accent);
+  background: currentColor;
+}
+:global(html[data-theme='light']) .airship {
+  --airship-highlight: #f4fbfb;
+  --airship-body: #c2d5da;
+  --airship-shadow: #7e9ca8;
+  --airship-line: #3a6b7b;
+}
+@keyframes float {
+  0%, 100% { transform: translate(-10px, 0) rotate(-1deg); }
+  50% { transform: translate(10px, -8px) rotate(1deg); }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes appear {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (max-width: 900px) {
+  .airship {
+    top: 10%;
+    right: 20px;
+    width: 245px;
+  }
+}
+@media (max-width: 760px) {
+  .airship {
+    top: max(450px, 46%);
+    right: 20px;
+    width: 230px;
+  }
+}
+@media (max-width: 380px) {
+  .airship {
+    right: 14px;
+    width: 215px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .airship, .flight, .propeller { animation: none; }
+  .screen img { transition: none; }
+}
+@media print {
+  .airship { display: none; }
+}
