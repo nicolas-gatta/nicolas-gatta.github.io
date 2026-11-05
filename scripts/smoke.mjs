@@ -51,6 +51,24 @@ try {
     assert.equal(pdf.status(), 200);
     assert((await pdf.body()).toString('ascii').startsWith('%PDF-'));
   });
+  await check('Airship logos, controls and experience link', async () => {
+    const airship = page.getByTestId('experience-airship');
+    await airship.waitFor();
+    assert.equal(await airship.getAttribute('data-running'), 'false');
+    await page.waitForFunction(() => [...document.querySelectorAll('[data-testid="experience-airship"] img')]
+      .every((image) => image.complete && image.naturalWidth > 0));
+    for (const name of ['IBM', 'Google', 'Takeda Pharmaceuticals']) {
+      await airship.getByRole('button', { name: `Show ${name} logo`, exact: true }).click();
+      assert.equal(await airship.getByRole('button', { name: `Show ${name} logo`, exact: true }).getAttribute('aria-pressed'), 'true');
+      assert.equal(await airship.getByRole('img', { name, exact: true }).count(), 1);
+    }
+    await airship.getByRole('button', { name: 'Pause company logos' }).click();
+    await airship.getByRole('button', { name: 'Play company logos' }).click();
+    await airship.getByRole('link', { name: 'View professional experience: Takeda Pharmaceuticals' }).click();
+    await page.waitForFunction(() => document.activeElement?.id === 'experience');
+    await page.getByRole('link', { name: /Nicolas Gatta.*home/ }).click();
+    await page.getByTestId('digital-hero').waitFor();
+  });
   await check('Timeline and section navigation', async () => {
     await page.getByRole('link', { name: 'Experience', exact: true }).click();
     await page.waitForFunction(() => {

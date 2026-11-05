@@ -28,7 +28,7 @@ Professional experience, education, certifications, technical competencies and p
 | Name, role, statement, location, social profiles, email and PDF configuration | `src/data/profile.ts`                       |
 | Professional data models                                                      | `src/data/models.ts`                        |
 | Experience, responsibilities and technologies                                 | `src/data/experience.ts`                    |
-| Organization labels (derived from the timeline)                               | `src/data/organizations.ts`                 |
+| Airship organization logos (derived from the timeline)                        | `src/data/organizations.ts`                 |
 | Projects, architecture, results, screenshots and optional GitHub URLs         | `src/data/projects.ts`                      |
 | Skill groups                                                                  | `src/data/skills.ts`                        |
 | Education                                                                     | `src/data/education.ts`                     |
@@ -87,6 +87,8 @@ The voice asset is `public/audio/connection-voice.wav`. To regenerate it on Wind
 
 The favicon is `public/favicon.svg`. The social card is `public/images/social-preview.png`, with its editable SVG source beside it. Both metadata URL and base path are configurable; replace the social card when final branding is ready.
 
+A small illustrated airship floats over the completed hero city. Its screen cycles through the IBM, Google and Takeda logos every five seconds and links to the experience timeline. The logo controls allow manual selection and pausing. Hovering, keyboard focus, hidden tabs and leaving the viewport pause the animation; reduced-motion visitors get a static airship with manual logo selection. Local logo assets and their sources are in `public/images/organizations/`.
+
 ## Validation
 
 The browser smoke suite uses the installed `playwright-core` and local Chrome; it does not download browsers. Start the production preview in a separate terminal:
@@ -116,7 +118,7 @@ Final local desktop Lighthouse checks in Chrome 156 (Windows, production preview
 
 The portfolio browser suite and cinematic checks cover phase continuity, the first scroll, session behavior, reduced motion, keyboard controls, canvas failure and explicit sound opt-in. The portfolio has also been verified under `/portfolio/`. TypeScript and production builds pass. For Lighthouse, run the **production preview** and choose Desktop. Scores depend on machine, browser, extensions and hosting; these are lab measurements, not guarantees for every device or a substitute for a full accessibility audit.
 
-During development, remove the session-storage key `ng:world-intro-seen:v1` and reload to replay the full opening. The opening clock lives in `src/features/intro/useWorldSequence.ts`; procedural geometry and construction timings live in `DigitalWorldRenderer.ts`. `DigitalHero.tsx` constructs the actual hero letters, so no duplicate title or page swap is needed. The first opening is 6.8 seconds, a session return is 1.6 seconds, and no asset download controls either duration.
+During development, remove the session-storage key `ng:world-intro-seen:v1` and reload to replay the full opening. The opening clock lives in `src/features/intro/useWorldSequence.ts`; procedural geometry and construction timings live in `DigitalWorldRenderer.ts`. `DigitalHero.tsx` constructs the actual hero letters, so no duplicate title or page swap is needed. The first opening is 6.8 seconds; a session return uses a 1.6-second pulse with a small cyan connection ring and “Welcome back” greeting. No asset download controls either duration.
 
 ## Exploring
 

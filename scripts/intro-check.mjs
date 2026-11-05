@@ -220,6 +220,13 @@ try {
       await page
         .locator('[data-testid="digital-hero"][data-intro-variant="short"]')
         .waitFor();
+      const returnMark = page.getByTestId('return-intro-mark');
+      assert.equal(await returnMark.locator('strong').textContent(), 'WELCOME BACK');
+      assert.equal(await page.getByTestId('identity-intro-mark').count(), 0);
+      const labelSize = await returnMark.locator('strong').evaluate((label) =>
+        parseFloat(getComputedStyle(label).fontSize)
+      );
+      assert(labelSize <= 16, 'Reloads should show a compact greeting.');
       await waitForCompletedHero(page);
       assert(
         Date.now() - started < 4000,

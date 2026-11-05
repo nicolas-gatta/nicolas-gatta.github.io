@@ -48,6 +48,18 @@
   background: linear-gradient(90deg, transparent, #55d4ed, transparent);
   box-shadow: 0 0 10px #42c7e866;
 }
+.returning strong {
+  font: 500 14px/1.5 var(--mono);
+  letter-spacing: 0.18em;
+  padding-left: 0.18em;
+  text-shadow: 0 0 14px #42c7e844;
+}
+.connectionMark {
+  width: 56px;
+  height: 56px;
+  color: #73d9ed;
+  filter: drop-shadow(0 0 8px #42c7e844);
+}
 .controlBar {
   position: absolute;
   bottom: max(32px, env(safe-area-inset-bottom));

@@ -20,6 +20,7 @@ import { useWorldSequence } from '../../features/intro/useWorldSequence';
 import { useWorldSound } from '../../features/intro/useWorldSound';
 import { profile } from '../../data/profile';
 import styles from './DigitalHero.module.css';
+import ExperienceAirship from './ExperienceAirship';
 
 const DigitalWorld = lazy(() => import('../../features/intro/DigitalWorld'));
 class WorldBoundary extends Component<
@@ -187,6 +188,7 @@ export default function DigitalHero() {
         </WorldBoundary>
       </div>
       <div className={styles.shade} aria-hidden="true" />
+      {!active && <ExperienceAirship />}
       <motion.div
         className={styles.inner}
         style={{ borderColor: guideBorder }}
@@ -288,6 +290,7 @@ export default function DigitalHero() {
       <Intro
         active={active}
         progress={progress}
+        variant={variant}
         onSkip={finish}
         soundEnabled={enabled}
         soundAvailable={available}

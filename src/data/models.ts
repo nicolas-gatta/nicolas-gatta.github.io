@@ -87,6 +87,7 @@ export interface Achievement {
 export interface Organization {
   id: string;
   name: string;
+  logo: string;
   relationship: string;
   isPlaceholder: boolean;
 }

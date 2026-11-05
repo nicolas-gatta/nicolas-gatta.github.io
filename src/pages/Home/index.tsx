@@ -13,7 +13,6 @@ import { Link } from 'react-router-dom';
 import DigitalHero from './DigitalHero';
 import ConstructionGuide from '../../components/animations/ConstructionGuide';
 import { projects } from '../../data/projects';
-import { organizations } from '../../data/organizations';
 import ProjectVisual from '../Projects/ProjectVisual';
 import ExperienceTimeline from './ExperienceTimeline';
 import ContactSection from '../Contact/ContactSection';
@@ -126,22 +125,6 @@ export default function Home() {
     <>
       <DigitalHero />
       <div className="page-shell">
-        <section
-          className={styles.organizations}
-          aria-label="Organizations from Nicolas Gatta's professional experience"
-        >
-          <div className={styles.orgIntro}>
-            PROFESSIONAL EXPERIENCE
-            <span>Organizations listed in the current CV</span>
-          </div>
-          <div className={styles.orgNames}>
-            {organizations.map((organization) => (
-              <span key={organization.id} className={styles[organization.id]}>
-                {organization.name}
-              </span>
-            ))}
-          </div>
-        </section>
         <section
           className={styles.section}
           id="about"
