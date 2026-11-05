@@ -5,6 +5,14 @@
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#080B0E" />
+    <script>
+      try {
+        document.documentElement.dataset.theme =
+          localStorage.getItem('ng:theme') === 'light' ? 'light' : 'dark';
+      } catch {
+        document.documentElement.dataset.theme = 'dark';
+      }
+    </script>
     <meta
       name="description"
       content="Portfolio of Nicolas Gatta, Data Engineer specializing in data platforms, artificial intelligence and software engineering."

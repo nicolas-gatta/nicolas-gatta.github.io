@@ -85,7 +85,8 @@ export default function Intro({
     >
       <p className="sr-only" id="world-intro-description">
         A digital world forms from light, then becomes Nicolas Gatta’s
-        portfolio. Sound is off. Skip at any time.
+        portfolio. Sound is {soundEnabled ? 'on' : 'off'}. Enable sound for the
+        robotic connection greeting. Skip at any time.
       </p>
       <motion.div
         className={styles.identity}
@@ -94,7 +95,7 @@ export default function Intro({
       >
         <span className={styles.identityRule} />
         <strong>Nicolas Gatta</strong>
-        <span className={styles.identityMeta}>SYSTEM / IDENTITY DETECTED</span>
+        <span className={styles.identityMeta}>IDENTITY CONFIRM. WELCOME USER.</span>
         <span className={styles.identityRule} />
       </motion.div>
       <div className={styles.controlBar}>

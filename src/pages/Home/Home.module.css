@@ -2,7 +2,8 @@
   display: flex;
   align-items: center;
   gap: 55px;
-  padding: 34px 4px;
+  margin-inline: calc(0px - var(--page-gutter));
+  padding: 34px calc(var(--page-gutter) + 4px);
   border-bottom: 1px solid var(--line);
 }
 .orgIntro {
@@ -54,7 +55,9 @@
 }
 .section {
   position: relative;
+  margin-inline: calc(0px - var(--page-gutter));
   padding-block: 94px;
+  padding-inline: var(--page-gutter);
   border-bottom: 1px solid var(--line);
 }
 .section > .eyebrow {
@@ -732,7 +735,7 @@
     width: 41px;
     height: 53px;
   }
-  .cvCallout > div:nth-child(2) {
+  .cvCallout > div:not(.cvIcon) {
     width: calc(100% - 60px);
   }
   .cvCallout h2 {

@@ -150,6 +150,11 @@
   transition: transform 0.65s cubic-bezier(0.2, 0.7, 0.2, 1);
   color: inherit;
 }
+:global(html[data-theme='light']) .visual,
+:global(html[data-theme='light']) .project .visual {
+  background: #e0eaed;
+  color: #346b80;
+}
 .project:hover .diagram {
   transform: scale(1.045);
 }

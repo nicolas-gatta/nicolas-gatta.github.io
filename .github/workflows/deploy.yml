@@ -1,11 +1,8 @@
 name: Validate and deploy to GitHub Pages
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-  workflow_dispatch:
+  release:
+    types: [published]
 
 permissions:
   contents: read
@@ -32,12 +29,10 @@ jobs:
           VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH }}
           VITE_SITE_URL: ${{ vars.VITE_SITE_URL }}
       - uses: actions/upload-pages-artifact@v3
-        if: github.event_name != 'pull_request'
         with:
           path: dist
 
   deploy:
-    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     permissions:

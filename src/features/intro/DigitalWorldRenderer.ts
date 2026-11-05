@@ -17,6 +17,12 @@ type Building = {
   start: number;
   accent: boolean;
 };
+type WindowPanel = {
+  corners: Point[];
+  top: number;
+  seed: number;
+};
+const crossStreets = [26, 72, 134, 206];
 
 const clamp = (value: number, min = 0, max = 1) =>
   Math.min(max, Math.max(min, value));
@@ -85,10 +91,60 @@ function makeCity() {
     start: 0.5,
     accent: false,
   });
+  // Keep the streets clear of façades as the city fills in around them.
+  for (const building of city) {
+    for (const street of crossStreets) {
+      if (building.z >= street + 3.5 || building.z + building.depth <= street - 3.5)
+        continue;
+      if (building.z < street - 7)
+        building.depth = street - 3.5 - building.z;
+      else building.z = street + 3.5;
+    }
+  }
   return city.sort((a, b) => b.z - a.z);
 }
 
 const city = makeCity();
+const noise = (seed: number) => {
+  const value = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
+  return value - Math.floor(value);
+};
+// Façade geometry and occupancy are generated once, never randomized per frame.
+const cityWindows = city.map((building, index) => {
+  const panels: WindowPanel[] = [];
+  const rows = Math.max(2, Math.floor(building.height / 2.3));
+  const addFacade = (side: boolean) => {
+    const span = side ? building.depth : building.width;
+    const columns = Math.max(2, Math.floor(span / 1.6));
+    for (let row = 0; row < rows; row++) {
+      for (let column = 0; column < columns; column++) {
+        const left = ((column + 0.23) / columns) * span;
+        const right = ((column + 0.68) / columns) * span;
+        const bottom = ((row + 0.3) / rows) * building.height;
+        const top = ((row + 0.62) / rows) * building.height;
+        const at = (u: number, y: number): Point =>
+          side
+            ? [
+                building.x + (building.x < 0 ? building.width : 0),
+                y,
+                building.z + u,
+              ]
+            : [building.x + u, y, building.z - 0.01];
+        panels.push({
+          corners: [
+            at(left, bottom), at(right, bottom),
+            at(right, top), at(left, top),
+          ],
+          top,
+          seed: index * 2137 + row * 53 + column * 7 + (side ? 1009 : 0),
+        });
+      }
+    }
+  };
+  addFacade(false);
+  addFacade(true);
+  return panels;
+});
 const trails: readonly Point[][] = [
   [
     [-45, 0.04, 61],
@@ -156,6 +212,8 @@ export function createDigitalWorld(
     cameraZ = 0,
     cameraX = 0,
     verticalScale = 1;
+  let lightMode = false;
+  const themeBackground = () => lightMode ? '243,245,244' : '8,11,14';
 
   function project(point: Point): ScreenPoint | null {
     const depth = point[2] - cameraZ;
@@ -217,7 +275,8 @@ export function createDigitalWorld(
     building: Building,
     p: number,
     settle: number,
-    index: number
+    index: number,
+    seconds: number
   ) {
     const grown = smooth(building.start, building.start + 0.18, p);
     if (grown === 0) return;
@@ -225,7 +284,7 @@ export function createDigitalWorld(
     const top = h * cubic(grown);
     const fog = Math.exp(-(z - cameraZ) / 190);
     const near = clamp((z - cameraZ - 12) / 24);
-    const illumination = fog * near * lerp(0.7, 0.3, settle);
+    const illumination = fog * near * lerp(0.7, 0.62, settle);
     const a: Point = [x, 0, z],
       b: Point = [x + w, 0, z],
       c: Point = [x + w, 0, z + d],
@@ -234,15 +293,21 @@ export function createDigitalWorld(
       B: Point = [x + w, top, z],
       C: Point = [x + w, top, z + d],
       E: Point = [x, top, z + d];
+    const projected = [A, B, C, E].map(project);
+    if (
+      projected.every((point) => !point || point[0] < -8) ||
+      projected.every((point) => !point || point[0] > width + 8)
+    ) return;
     const surface = smooth(0.55, 0.98, grown) * illumination;
-    face([a, b, B, A], accent ? '#12252c' : '#101a21', surface * 0.7);
-    face([b, c, C, B], '#10202a', surface * 0.45);
-    face([A, B, C, E], '#19313b', surface * 0.42);
-    const edge = accent ? '#377585' : '#305160';
+    face([a, b, B, A], lightMode ? '#a9c5ce' : accent ? '#12252c' : '#101a21', surface * 0.7);
+    face(x < 0 ? [b, c, C, B] : [a, e, E, A], lightMode ? '#8eafb9' : '#10202a', surface * 0.6);
+    face([A, B, C, E], lightMode ? '#d0dfe2' : '#19313b', surface * 0.42);
+    const edge = lightMode ? '#527f90' : accent ? '#377585' : '#305160';
     const edges: [Point, Point][] = [
       [a, A],
       [b, B],
       [c, C],
+      [e, E],
       [A, B],
       [B, C],
       [C, E],
@@ -252,6 +317,49 @@ export function createDigitalWorld(
     ];
     for (const [from, to] of edges)
       stroke(from, to, edge, illumination, accent ? 0.9 : 0.7);
+    // Windows arrive only as the opening settles, preserving its clean construction shot.
+    const detail = smooth(0.88, 1, p) * fog * near;
+    if (detail > 0 && (!compact() || z < 130 || index % 2 === 0)) {
+      const frontWidth =
+        projected[0] && projected[1]
+          ? Math.abs(projected[1][0] - projected[0][0])
+          : 0;
+      if (frontWidth > 9) {
+        for (const panel of cityWindows[index]) {
+          if (panel.top > top) continue;
+          const occupancy = noise(panel.seed);
+          let light = occupancy > 0.62 ? 1 : 0;
+          // A handful of rooms change slowly, independently of one another.
+          if (occupancy > 0.94 && seconds > 0) {
+            const period = 11 + noise(panel.seed + 1) * 14;
+            const clock = seconds / period + noise(panel.seed + 2) * 10;
+            const cycle = Math.floor(clock);
+            const before =
+              noise(panel.seed + (cycle - 1) * 19) > 0.45 ? 1 : 0;
+            const after = noise(panel.seed + cycle * 19) > 0.45 ? 1 : 0;
+            light = lerp(before, after, smooth(0, 0.08, clock - cycle));
+          }
+          const warm = noise(panel.seed + 3) > 0.86;
+          face(
+            panel.corners,
+            lightMode
+              ? light > 0 ? '#719eaf' : '#3e6477'
+              : light > 0 ? (warm ? '#c4c5a0' : '#70c4da') : '#25414e',
+            detail * (0.12 + light * (0.25 + noise(panel.seed + 4) * 0.34))
+          );
+        }
+      }
+      // Subtle roof and façade divisions keep unlit buildings legible too.
+      stroke(A, B, '#70b6c8', detail * 0.38, 0.8);
+      stroke(
+        x < 0 ? B : A, x < 0 ? C : E,
+        '#70b6c8', detail * 0.25, 0.65
+      );
+      for (let column = 1; column < 3; column++) {
+        const u = x + w * column / 3;
+        stroke([u, 0, z], [u, top, z], '#335563', detail * 0.24, 0.5);
+      }
+    }
     // The travelling cap and corner edges are the recent construction; old geometry stays dim.
     const activeEdge = Math.sin(grown * Math.PI) * fog * 0.9;
     if (activeEdge > 0.03) {
@@ -272,6 +380,109 @@ export function createDigitalWorld(
             edge,
             illumination * 0.25,
             0.5
+          );
+      }
+    }
+  }
+
+  function drawRoads(reveal: number) {
+    if (!reveal) return;
+    const asphalt = lightMode ? '#c6d8dd' : '#0d1c24';
+    const curb = lightMode ? '#6892a2' : '#316375';
+    face(
+      [[-4, 0.015, 16], [4, 0.015, 16], [4, 0.015, 270], [-4, 0.015, 270]],
+      asphalt, reveal * 0.8
+    );
+    for (const x of [-4, 4])
+      stroke([x, 0.03, 16], [x, 0.03, 270], curb, reveal * 0.6, 0.8);
+    for (let z = 19; z < 270; z += 6) {
+      if (crossStreets.some((street) => Math.abs(street - z) < 5)) continue;
+      stroke([0, 0.04, z], [0, 0.04, z + 2.4], curb, reveal * 0.55, 0.7);
+    }
+    for (const z of crossStreets) {
+      face(
+        [
+          [-100, 0.02, z - 3], [100, 0.02, z - 3],
+          [100, 0.02, z + 3], [-100, 0.02, z + 3],
+        ],
+        asphalt, reveal * 0.85
+      );
+      for (const edge of [-3, 3]) {
+        stroke(
+          [-100, 0.03, z + edge], [-4, 0.03, z + edge],
+          curb, reveal * 0.45, 0.6
+        );
+        stroke(
+          [4, 0.03, z + edge], [100, 0.03, z + edge],
+          curb, reveal * 0.45, 0.6
+        );
+      }
+      for (let x = -98; x < 100; x += 7) {
+        if (Math.abs(x) < 7) continue;
+        stroke([x, 0.04, z], [x + 2.8, 0.04, z], curb, reveal * 0.45, 0.6);
+      }
+      // Short crosswalks make the junctions read as streets at a glance.
+      for (let x = -3; x <= 3; x += 1.2) {
+        for (const side of [-1, 1])
+          stroke(
+            [x, 0.045, z + side * 4], [x, 0.045, z + side * 5.2],
+            curb, reveal * 0.5, 1
+          );
+      }
+    }
+  }
+
+  function drawTraffic(seconds: number, reveal: number) {
+    if (!reveal) return;
+    const count = compact() ? 18 : 34;
+    // World-space cars share the same perspective and depth as the buildings.
+    const cars = Array.from({ length: count }, (_, index) => {
+      const horizontal = index % 3 === 0;
+      const direction = index % 2 === 0 ? 1 : -1;
+      const distance = horizontal ? 190 : 235;
+      const travelled = (
+        seconds * (horizontal ? 4.5 : 5.5) +
+        (horizontal ? Math.floor(index / 6) : Math.floor(index / 2)) * 31.7
+      ) % distance;
+      const z = horizontal
+        ? crossStreets[1 + Math.floor(index / 6) % 3] + direction * 1.4
+        : 20 + (direction > 0 ? travelled : distance - travelled);
+      return {
+        x: horizontal ? direction * (travelled - distance / 2) : direction * 1.8,
+        z, horizontal, direction,
+      };
+    }).sort((a, b) => b.z - a.z);
+    for (const car of cars) {
+      const opacity = reveal * Math.exp(-(car.z - cameraZ) / 240);
+      const at = (along: number, across: number, y = 0.2): Point =>
+        car.horizontal
+          ? [car.x + along * car.direction, y, car.z + across]
+          : [car.x + across, y, car.z + along * car.direction];
+      // A low body, raised cabin and paired lights distinguish cars from the light trails.
+      face(
+        [at(-1.2, -0.48), at(1.2, -0.48), at(1.2, 0.48), at(-1.2, 0.48)],
+        lightMode ? '#527d91' : '#426a7d', opacity * 0.85
+      );
+      face(
+        [
+          at(-0.65, -0.35, 0.65), at(0.5, -0.35, 0.65),
+          at(0.5, 0.35, 0.65), at(-0.65, 0.35, 0.65),
+        ],
+        lightMode ? '#d3e6e9' : '#7daebb', opacity * 0.8
+      );
+      for (const side of [-0.34, 0.34]) {
+        stroke(
+          at(1.22, side, 0.35), at(1.22, side * 0.45, 0.35),
+          lightMode ? '#ffffff' : '#c5f3ff', opacity, 1.8, !lightMode
+        );
+        stroke(
+          at(-1.22, side, 0.3), at(-1.22, side * 0.45, 0.3),
+          lightMode ? '#b05645' : '#e48a71', opacity * 0.8, 1.3
+        );
+        if (!lightMode)
+          stroke(
+            at(-1.3, side, 0.12), at(-3.6, side, 0.12),
+            '#55cbe4', opacity * 0.23, 0.7
           );
       }
     }
@@ -378,6 +589,8 @@ export function createDigitalWorld(
           : raw;
     const scroll = reducedMotion ? 0 : clamp(scrollProgress.get());
     const settled = smooth(0.76, 1, p);
+    lightMode = document.documentElement.dataset.theme === 'light' &&
+      !settings.current.active;
     const moving = smooth(0.24, 0.84, p);
     const desktop = width >= 760;
     pointerX = lerp(pointerX, targetX, 0.055);
@@ -397,7 +610,7 @@ export function createDigitalWorld(
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.globalAlpha = 1;
-    ctx.fillStyle = '#080b0e';
+    ctx.fillStyle = `rgb(${themeBackground()})`;
     ctx.fillRect(0, 0, width, height);
 
     const horizonFormation = smooth(0.16, 0.25, p);
@@ -412,7 +625,7 @@ export function createDigitalWorld(
       );
       halo.addColorStop(0, `rgba(17,66,82,${0.12 * horizonFormation})`);
       halo.addColorStop(0.4, `rgba(12,37,48,${0.1 * horizonFormation})`);
-      halo.addColorStop(1, 'rgba(8,11,14,0)');
+      halo.addColorStop(1, `rgba(${themeBackground()},0)`);
       ctx.fillStyle = halo;
       ctx.fillRect(0, 0, width, height);
       const half = width * 0.65 * cubic(horizonFormation);
@@ -488,8 +701,12 @@ export function createDigitalWorld(
           );
         }
       });
+      const streetReveal = smooth(0.88, 1, p);
+      drawRoads(streetReveal);
+      drawTraffic(reducedMotion ? 0 : now / 1000, streetReveal);
       for (let i = 0; i < city.length; i++)
-        if (!compact() || i % 3 !== 0) drawBuilding(city[i], p, settled, i);
+        if (!compact() || i % 3 !== 0)
+          drawBuilding(city[i], p, settled, i, reducedMotion ? 0 : now / 1000);
       drawGate(p, settled);
       if (!reducedMotion) {
         if (p < 0.94) {
@@ -565,22 +782,22 @@ export function createDigitalWorld(
     // A dark reading zone grows naturally as the scene aligns with the real hero layout.
     if (settled > 0) {
       const reading = ctx.createLinearGradient(0, 0, width, 0);
-      reading.addColorStop(0, `rgba(8,11,14,${settled * 0.97})`);
+      reading.addColorStop(0, `rgba(${themeBackground()},${settled * 0.97})`);
       reading.addColorStop(
         desktop ? 0.32 : 0.1,
-        `rgba(8,11,14,${settled * 0.87})`
+        `rgba(${themeBackground()},${settled * 0.87})`
       );
       reading.addColorStop(
         desktop ? 0.6 : 0.65,
-        `rgba(8,11,14,${settled * 0.2})`
+        `rgba(${themeBackground()},${settled * 0.2})`
       );
-      reading.addColorStop(1, 'rgba(8,11,14,0)');
+      reading.addColorStop(1, `rgba(${themeBackground()},0)`);
       ctx.fillStyle = reading;
       ctx.fillRect(0, 0, width, height);
     }
     const bottom = ctx.createLinearGradient(0, height * 0.76, 0, height);
-    bottom.addColorStop(0, 'rgba(8,11,14,0)');
-    bottom.addColorStop(1, 'rgba(8,11,14,.65)');
+    bottom.addColorStop(0, `rgba(${themeBackground()},0)`);
+    bottom.addColorStop(1, `rgba(${themeBackground()},.65)`);
     ctx.fillStyle = bottom;
     ctx.fillRect(0, height * 0.76, width, height * 0.24);
 
@@ -683,6 +900,11 @@ export function createDigitalWorld(
   intersectionObserver.observe(canvas);
   const unwatchProgress = progress.on('change', requestDraw);
   const unwatchScroll = scrollProgress.on('change', requestDraw);
+  const themeObserver = new MutationObserver(requestDraw);
+  themeObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme', 'data-world-intro'],
+  });
   document.addEventListener('visibilitychange', onVisibility);
   window.addEventListener('pointermove', onPointer, { passive: true });
   resize();
@@ -691,6 +913,7 @@ export function createDigitalWorld(
     cancelAnimationFrame(frame);
     resizeObserver.disconnect();
     intersectionObserver.disconnect();
+    themeObserver.disconnect();
     unwatchProgress();
     unwatchScroll();
     document.removeEventListener('visibilitychange', onVisibility);

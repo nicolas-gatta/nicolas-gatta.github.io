@@ -282,6 +282,7 @@ export default function Home() {
           tabIndex={-1}
           aria-labelledby="cv-heading"
         >
+          <ConstructionGuide />
           <div className={styles.cvIcon}>
             <FileText size={27} strokeWidth={1.1} />
           </div>

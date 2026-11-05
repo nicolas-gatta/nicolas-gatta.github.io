@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { MotionValue } from 'framer-motion';
+import { worldDurations, type WorldVariant } from './useWorldSequence';
 
 interface WorldSoundOptions {
   progress: MotionValue<number>;
   active: boolean;
   reducedMotion: boolean;
+  variant: WorldVariant;
 }
 
 interface SoundEngine {
@@ -13,6 +15,9 @@ interface SoundEngine {
   sources: Set<AudioScheduledSourceNode>;
   nodes: Set<AudioNode>;
   ambient: boolean;
+  voiceRequest: AbortController;
+  voiceBuffer?: AudioBuffer;
+  voicePlayed: boolean;
   suspendTimer?: number;
 }
 
@@ -49,6 +54,7 @@ function stopSources(engine: SoundEngine) {
 
 function dispose(engine: SoundEngine | null) {
   if (!engine) return;
+  engine.voiceRequest.abort();
   clearSuspendTimer(engine);
   engine.master.gain.cancelScheduledValues(engine.context.currentTime);
   engine.master.gain.value = 0;
@@ -158,11 +164,51 @@ function pulse(
   oscillator.stop(now + duration + 0.02);
 }
 
-/** All audio is synthesized locally and remains off until an explicit toggle click. */
+function playConnectionVoice(
+  engine: SoundEngine,
+  progress: number,
+  variant: WorldVariant
+) {
+  const { context, voiceBuffer } = engine;
+  // The short return animation has no time for a complete spoken greeting.
+  if (
+    variant !== 'full' ||
+    !voiceBuffer ||
+    engine.voicePlayed ||
+    context.state !== 'running' ||
+    progress < 0.18 ||
+    (1 - progress) * worldDurations.full < (voiceBuffer.duration + 0.2) * 1000
+  )
+    return;
+  engine.voicePlayed = true;
+  const source = context.createBufferSource();
+  const level = context.createGain();
+  source.buffer = voiceBuffer;
+  // Keep the greeting clear above the very quiet procedural ambience.
+  level.gain.value = 3.5;
+  source.connect(level).connect(engine.master);
+  engine.sources.add(source);
+  engine.nodes.add(level);
+  source.onended = () => {
+    source.disconnect();
+    level.disconnect();
+    engine.sources.delete(source);
+    engine.nodes.delete(level);
+  };
+  source.start();
+}
+
+function startSound(engine: SoundEngine, progress: number, variant: WorldVariant) {
+  startAmbience(engine);
+  playConnectionVoice(engine, progress, variant);
+}
+
+/** Local ambience and a self-hosted voice stay silent until an explicit toggle. */
 export function useWorldSound({
   progress,
   active,
   reducedMotion,
+  variant,
 }: WorldSoundOptions) {
   const [enabled, setEnabled] = useState(false);
   const [available, setAvailable] = useState(() => Boolean(audioConstructor()));
@@ -211,8 +257,29 @@ export function useWorldSound({
         sources: new Set(),
         nodes: new Set(),
         ambient: false,
+        voiceRequest: new AbortController(),
+        voicePlayed: false,
       };
       engine.current = next;
+      if (variant === 'full') {
+        void fetch(`${import.meta.env.BASE_URL}audio/connection-voice.wav`, {
+          signal: next.voiceRequest.signal,
+        })
+          .then((response) => {
+            if (!response.ok) throw new Error('Intro voice is unavailable.');
+            return response.arrayBuffer();
+          })
+          .then((data) => context.decodeAudioData(data))
+          .then((buffer) => {
+            if (engine.current !== next || token !== generation.current) return;
+            next.voiceBuffer = buffer;
+            if (activeRef.current && !document.hidden)
+              playConnectionVoice(next, progress.get(), variant);
+          })
+          .catch(() => {
+            // A missing clip or cancelled download leaves the ambience usable.
+          });
+      }
       void context
         .resume()
         .then(() => {
@@ -223,7 +290,8 @@ export function useWorldSound({
           )
             return;
           setEnabled(true);
-          if (activeRef.current && !document.hidden) startAmbience(next);
+          if (activeRef.current && !document.hidden)
+            startSound(next, progress.get(), variant);
           else hush(next, true);
         })
         .catch(() => {
@@ -232,7 +300,7 @@ export function useWorldSound({
     } catch {
       fail();
     }
-  }, [available, fail]);
+  }, [available, fail, progress, variant]);
 
   useEffect(() => {
     const current = engine.current;
@@ -250,12 +318,12 @@ export function useWorldSound({
           activeRef.current &&
           !document.hidden
         )
-          startAmbience(current);
+          startSound(current, progress.get(), variant);
       })
       .catch(() => {
         if (engine.current === current && wanted.current) fail();
       });
-  }, [active, enabled, fail]);
+  }, [active, enabled, fail, progress, variant]);
 
   useEffect(() => {
     let previous = progress.get();
@@ -275,6 +343,7 @@ export function useWorldSound({
         value < before
       )
         return;
+      playConnectionVoice(current, value, variant);
       const cues = [
         { at: 0.18, from: 58, to: 25, duration: 0.65, volume: 0.13 },
         { at: 0.35, from: 230, to: 900, duration: 0.36, volume: 0.035 },
@@ -286,7 +355,7 @@ export function useWorldSound({
           pulse(current, cue.from, cue.to, cue.duration, cue.volume);
       });
     });
-  }, [progress]);
+  }, [progress, variant]);
 
   useEffect(() => {
     mounted.current = true;
@@ -304,7 +373,7 @@ export function useWorldSound({
               activeRef.current &&
               !document.hidden
             )
-              startAmbience(current);
+              startSound(current, progress.get(), variant);
           })
           .catch(() => {
             if (engine.current === current && wanted.current) fail();
@@ -319,7 +388,7 @@ export function useWorldSound({
       dispose(engine.current);
       engine.current = null;
     };
-  }, [fail]);
+  }, [fail, progress, variant]);
 
   return { enabled, available, toggleSound };
 }
