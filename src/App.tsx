@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { HashRouter, Route, Routes } from 'react-router-dom';
+import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { MotionConfig } from 'framer-motion';
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';
@@ -10,6 +10,7 @@ const CV = lazy(() => import('./pages/CV'));
 const Projects = lazy(() => import('./pages/Projects'));
 const ProjectDetail = lazy(() => import('./pages/ProjectDetail'));
 const Contact = lazy(() => import('./pages/Contact'));
+const Garage = lazy(() => import('./pages/Garage'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const SecretSystem = lazy(() => import('./features/easterEggs/SecretSystem'));
 
@@ -34,6 +35,8 @@ export default function App() {
                 <Route path="/projects" element={<Projects />} />
                 <Route path="/projects/:id" element={<ProjectDetail />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/garage" element={<Garage />} />
+                <Route path="/lab/garage" element={<Navigate to="/garage" replace />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>

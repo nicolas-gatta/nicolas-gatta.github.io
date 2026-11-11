@@ -16,6 +16,7 @@ type Building = {
   height: number;
   start: number;
   accent: boolean;
+  billboard?: boolean;
 };
 type WindowPanel = {
   corners: Point[];
@@ -90,6 +91,16 @@ function makeCity() {
     height: 36,
     start: 0.5,
     accent: false,
+  });
+  city.push({
+    x: 14,
+    z: 98,
+    width: 8,
+    depth: 8,
+    height: 22,
+    start: 0.48,
+    accent: false,
+    billboard: true,
   });
   // Keep the streets clear of façades as the city fills in around them.
   for (const building of city) {
@@ -181,7 +192,8 @@ export function createDigitalWorld(
   canvas: HTMLCanvasElement,
   progress: MotionValue<number>,
   scrollProgress: MotionValue<number>,
-  settings: RefObject<Settings>
+  settings: RefObject<Settings>,
+  garageEntrance: RefObject<HTMLAnchorElement>
 ) {
   let context: CanvasRenderingContext2D | null;
   try {
@@ -385,6 +397,33 @@ export function createDigitalWorld(
     }
   }
 
+  /** A small Belgian flag billboard on a rooftop below the airship. */
+  function drawBillboard(building: Building, reveal: number) {
+    if (!reveal) return;
+    const center = building.x + building.width / 2;
+    const panelWidth = Math.max(5.3, building.width * 0.76);
+    const left = center - panelWidth / 2;
+    const right = center + panelWidth / 2;
+    const bottom = building.height + 1.2;
+    const top = bottom + (right - left) * 0.78;
+    const z = building.z - 0.04;
+    for (const x of [lerp(left, right, 0.2), lerp(left, right, 0.8)]) {
+      stroke([x, building.height, z], [x, bottom - 0.25, z], '#69d5eb', reveal * 0.7, 1);
+      stroke([x, bottom - 0.25, z], [x, building.height, z + 1.5], '#69d5eb', reveal * 0.35, 0.8);
+    }
+    const panel = (x1: number, x2: number, y1 = bottom, y2 = top): Point[] =>
+      [[x1, y1, z], [x2, y1, z], [x2, y2, z], [x1, y2, z]];
+    face(panel(left - 0.25, right + 0.25, bottom - 0.25, top + 0.25), '#142b35', reveal);
+    const colors = ['#17191c', '#fdda24', '#ef3340'];
+    colors.forEach((color, index) => {
+      face(panel(lerp(left, right, index / 3), lerp(left, right, (index + 1) / 3)), color, reveal * 0.95);
+    });
+    const corners = panel(left - 0.25, right + 0.25, bottom - 0.25, top + 0.25);
+    for (let index = 0; index < corners.length; index++) {
+      stroke(corners[index], corners[(index + 1) % corners.length], '#69d5eb', reveal * 0.7, 0.8);
+    }
+  }
+
   function drawRoads(reveal: number) {
     if (!reveal) return;
     const asphalt = lightMode ? '#c6d8dd' : '#0d1c24';
@@ -430,6 +469,87 @@ export function createDigitalWorld(
           );
       }
     }
+  }
+
+  /** A street-level workshop uses the city camera; HTML provides its native, accessible link. */
+  function drawGarage() {
+    if (settings.current?.active) return;
+    const mobile = width < 760;
+    const frontage = mobile ? clamp(width * 0.55, 180, 220) : clamp(width * 0.18, 200, 245);
+    const z = mobile ? 32.5 : 42;
+    // Compose the plot once from the settled camera, then let parallax/scroll project it normally.
+    const baseFocal = Math.min(width * 0.76, height * 1.08) * 1.1;
+    const scale = baseFocal / (z - 8);
+    const w = frontage / scale;
+    const x = Math.max(5.2, (width - frontage - (mobile ? 20 : 32) - width * cityShift()) / scale);
+    const h = mobile ? 9.5 : 4.8;
+    const d = mobile ? 7 : 6;
+    const at = (u: number, y: number, depth = 0): Point => [x + u * w, y * h, z + depth];
+    const a = at(0, 0), b = at(1, 0), A = at(0, 1), B = at(1, 1);
+    const e = at(0, 0, d), E = at(0, 1, d), C = at(1, 1, d);
+    const link = garageEntrance.current;
+    const engaged = !!link?.matches(':hover, :focus-visible');
+    const edge = lightMode ? '#537f8e' : '#457f8e';
+    const apron = Math.max(29.5, z - 5);
+
+    // A paved forecourt joins the main street rather than floating above its grid.
+    face([[3.85, .025, apron], [x + w + .6, .025, apron], [x + w + .6, .025, z + d], [3.85, .025, z + d]], lightMode ? '#bed0d4' : '#10212a', .94);
+    stroke([4.05, .06, apron], [x + w + .6, .06, apron], edge, .42, .8);
+    stroke([x + w + .6, .06, apron], [x + w + .6, .06, z + d], edge, .34, .7);
+    for (const u of [.06, .94]) stroke(at(u, .01, -3.2), at(u, .01, -.6), edge, .34, .65);
+    face([at(.12, .012, -3.4), at(.88, .012, -3.4), at(.82, .012), at(.18, .012)], '#c6c298', lightMode ? .1 : .045);
+    // Opaque faces occlude the grid, with a shaded street-facing side and a flat service roof.
+    face([a, e, E, A], lightMode ? '#9ebbc4' : '#10212a', .98);
+    face([A, B, C, E], lightMode ? '#bed0d3' : '#1a323d', .96);
+    face([a, b, B, A], lightMode ? '#abc4ca' : '#142630', .99);
+    for (const [from, to] of [[a, A], [a, b], [A, B], [A, E], [B, C], [C, E], [e, E], [a, e]] as [Point, Point][]) stroke(from, to, edge, .8, .8);
+    for (let row = 1; row < 5; row++) stroke(at(0, row / 5), at(1, row / 5), edge, .14, .5);
+    // Roof seams and a low ventilation housing carry the same detail as nearby city buildings.
+    for (const u of [.22, .5, .78]) stroke(at(u, 1.012), at(u, 1.012, d), edge, .3, .6);
+    face([at(.58, 1.02, d * .55), at(.82, 1.02, d * .55), at(.82, 1.02, d * .82), at(.58, 1.02, d * .82)], lightMode ? '#829fa9' : '#29434d', .9);
+    stroke(at(.58, 1.035, d * .55), at(.82, 1.035, d * .55), edge, .65, 1);
+
+    const panel = (u1: number, u2: number, bottom: number, top: number, depth = -.025): Point[] => [at(u1, bottom, depth), at(u2, bottom, depth), at(u2, top, depth), at(u1, top, depth)];
+    face(panel(.1, .9, .025, .68), lightMode ? '#456673' : '#081419', 1);
+    for (const u of [.1, .9]) stroke(at(u, .025, -.04), at(u, .68, -.04), edge, .75, .9);
+    stroke(at(.1, .68, -.04), at(.9, .68, -.04), edge, .8, .9);
+    // The shutter stays partly open, revealing a parked car and warm workshop lamps.
+    const shutterBottom = engaged ? .5 : .39;
+    face(panel(.115, .885, shutterBottom, .665, -.05), lightMode ? '#718f9b' : '#203d49', .98);
+    for (let y = shutterBottom + .045; y < .66; y += .05) stroke(at(.12, y, -.06), at(.88, y, -.06), edge, .5, .6);
+    face(panel(.29, .72, .04, .16, -.06), lightMode ? '#668590' : '#31505c', 1);
+    face([at(.34, .16, -.065), at(.4, .29, -.065), at(.62, .29, -.065), at(.69, .16, -.065)], lightMode ? '#4c7081' : '#527787', 1);
+    face([at(.39, .175, -.07), at(.43, .26, -.07), at(.6, .26, -.07), at(.65, .175, -.07)], '#0c202a', 1);
+    face(panel(.39, .61, .06, .105, -.075), '#0b1a21', 1);
+    for (const [left, right] of [[.31, .38], [.63, .7]]) stroke(at(left, .13, -.08), at(right, .13, -.08), '#e1d4a0', .9, 2, engaged);
+    for (const u of [.06, .94]) stroke(at(u, .65, -.05), at(u, .76, -.05), lightMode ? '#b9a978' : '#c8ba8c', .8, 1.5);
+    stroke(at(.08, .96, -.025), at(.92, .96, -.025), lightMode ? '#517f90' : '#6bbbcf', engaged ? .9 : .5, 1, engaged);
+
+    if (!link) return;
+    const silhouette = [E, C, B, b, a, e].map(project);
+    if (silhouette.some((point) => !point)) return;
+    const corners = silhouette as ScreenPoint[];
+    const left = Math.min(...corners.map((point) => point[0]));
+    const top = Math.min(...corners.map((point) => point[1]));
+    const boxWidth = Math.max(...corners.map((point) => point[0])) - left;
+    const boxHeight = Math.max(...corners.map((point) => point[1])) - top;
+    const signTopLeft = project(at(.07, .91, -.04));
+    const signBottomRight = project(at(.93, .7, -.04));
+    if (!signTopLeft || !signBottomRight) return;
+    Object.assign(link.style, {
+      left: `${left}px`, top: `${top}px`, width: `${boxWidth}px`, height: `${boxHeight}px`,
+      clipPath: `polygon(${corners.map(([px, py]) => `${(px - left) / boxWidth * 100}% ${(py - top) / boxHeight * 100}%`).join(',')})`,
+    });
+    link.style.setProperty('--sign-left', `${signTopLeft[0] - left}px`);
+    link.style.setProperty('--sign-top', `${signTopLeft[1] - top}px`);
+    link.style.setProperty('--sign-width', `${signBottomRight[0] - signTopLeft[0]}px`);
+    link.style.setProperty('--sign-height', `${signBottomRight[1] - signTopLeft[1]}px`);
+    link.dataset.cityIntegrated = 'true';
+  }
+
+  function cityShift() {
+    // A wider street view on narrow screens leaves a proper foreground plot beside the road.
+    return width < 760 ? .15 : lerp(.5, .71, smooth(900, 1280, width));
   }
 
   function drawTraffic(seconds: number, reveal: number) {
@@ -595,7 +715,7 @@ export function createDigitalWorld(
     const desktop = width >= 760;
     pointerX = lerp(pointerX, targetX, 0.055);
     pointerY = lerp(pointerY, targetY, 0.055);
-    const shift = desktop ? 0.71 : 0.61;
+    const shift = cityShift();
     centerX =
       width * lerp(0.5, shift, settled) +
       (reducedMotion ? 0 : pointerX * 4 * settled);
@@ -603,7 +723,7 @@ export function createDigitalWorld(
       height * (lerp(0.55, 0.52, settled) - scroll * 0.11) +
       (reducedMotion ? 0 : pointerY * 2);
     focal = Math.min(width * 0.76, height * 1.08) * lerp(0.9, 1.1, moving);
-    cameraY = lerp(8.6, 9.8, moving) + scroll * 6;
+    cameraY = lerp(8.6, desktop ? 9.8 : 30, moving) + scroll * 6;
     cameraZ = lerp(-36, 8, moving);
     cameraX = reducedMotion ? 0 : pointerX * 0.35 * settled;
     verticalScale = lerp(1, 0.84, settled) - scroll * 0.35;
@@ -704,10 +824,14 @@ export function createDigitalWorld(
       const streetReveal = smooth(0.88, 1, p);
       drawRoads(streetReveal);
       drawTraffic(reducedMotion ? 0 : now / 1000, streetReveal);
-      for (let i = 0; i < city.length; i++)
-        if (!compact() || i % 3 !== 0)
+      for (let i = 0; i < city.length; i++) {
+        if (!compact() || i % 3 !== 0 || city[i].billboard) {
           drawBuilding(city[i], p, settled, i, reducedMotion ? 0 : now / 1000);
+          if (city[i].billboard) drawBillboard(city[i], smooth(0.9, 1, p));
+        }
+      }
       drawGate(p, settled);
+      drawGarage();
       if (!reducedMotion) {
         if (p < 0.94) {
           drawTrail(trails[0], (p - 0.39) / 0.25, 0.85, 0.16);
@@ -918,5 +1042,7 @@ export function createDigitalWorld(
     unwatchScroll();
     document.removeEventListener('visibilitychange', onVisibility);
     window.removeEventListener('pointermove', onPointer);
+    garageEntrance.current?.removeAttribute('style');
+    if (garageEntrance.current) delete garageEntrance.current.dataset.cityIntegrated;
   };
 }

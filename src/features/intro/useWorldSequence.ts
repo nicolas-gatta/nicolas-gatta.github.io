@@ -14,7 +14,7 @@ let presentedInDocument = false;
 export function useWorldSequence() {
   const { search } = useLocation();
   const reducedMotion = !!useReducedMotion();
-  const [variant] = useState<WorldVariant>(() => {
+  const [variant, setVariant] = useState<WorldVariant>(() => {
     if (
       presentedInDocument ||
       !enteredAtHome ||
@@ -34,12 +34,19 @@ export function useWorldSequence() {
     setActive(false);
     writeSession(worldSessionKey, true);
   }, [progress]);
+  const replay = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    elapsed.current = 0;
+    setVariant('full');
+    progress.set(0);
+    setActive(true);
+  }, [progress]);
 
   useEffect(() => {
     presentedInDocument = true;
     if (!active || variant === 'still') return;
     writeSession(worldSessionKey, true);
-    const duration = worldDurations[variant];
+    const duration = reducedMotion ? 450 : worldDurations[variant];
     let frame = 0;
     let last = performance.now();
     const tick = (now: number) => {
@@ -63,10 +70,10 @@ export function useWorldSequence() {
       cancelAnimationFrame(frame);
       document.removeEventListener('visibilitychange', resume);
     };
-  }, [active, variant, progress, finish]);
+  }, [active, variant, progress, finish, reducedMotion]);
 
   useEffect(() => {
     if (reducedMotion || new URLSearchParams(search).has('section')) finish();
   }, [reducedMotion, search, finish]);
-  return { variant, progress, active, reducedMotion, finish };
+  return { variant, progress, active, reducedMotion, finish, replay };
 }

@@ -19,10 +19,8 @@
   animation: arrive 0.3s ease-out;
   color: var(--ink);
 }
-@media (max-width: 760px) {
-  :global(body:has([data-back-navigation])) .region {
-    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
-  }
+:global(body:has([data-terminal-trigger], [data-back-navigation])) .region {
+  bottom: calc(88px + env(safe-area-inset-bottom, 0px));
 }
 .toast svg {
   color: inherit;

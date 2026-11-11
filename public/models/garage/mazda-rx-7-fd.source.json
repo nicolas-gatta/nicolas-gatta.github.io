@@ -1,0 +1,17 @@
+{
+  "downloadUrl": "https://raw.githubusercontent.com/pedrosoandre/carros/main/assets/mazda-rx-7-fd.glb",
+  "sourceUrl": "https://sketchfab.com/3d-models/mazda-rx-7-fd-d35ff630df614771b82e7b2f59035b1e",
+  "name": "Mazda RX-7 FD",
+  "description": "Mazda Rx-7 FD i made in blender 2.82a\n\n**Update 25.05.2020:** added some details, and improvements.\n\n/:",
+  "author": "Lexyc16",
+  "authorUrl": "https://sketchfab.com/Lexyc16",
+  "license": {
+    "uri": "https://api.sketchfab.com/v3/licenses/322a749bcfa841b29dff1e8a1bb74b0b",
+    "label": "CC Attribution",
+    "fullName": "Creative Commons Attribution",
+    "requirements": "Author must be credited. Commercial use is allowed.",
+    "url": "http://creativecommons.org/licenses/by/4.0/",
+    "slug": "by"
+  },
+  "bytes": 3941268
+}

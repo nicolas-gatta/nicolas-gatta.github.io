@@ -333,7 +333,7 @@
   padding: 36px;
   border: 1px solid var(--line-strong);
   background: var(--surface-raised);
-  margin-top: 45px;
+  margin-block: 45px;
 }
 .cvIcon {
   width: 60px;

@@ -1,0 +1,60 @@
+[
+  {
+    "id": "garage_floor",
+    "source": "https://polyhaven.com/a/garage_floor",
+    "license": "CC0",
+    "licenseUrl": "https://polyhaven.com/license",
+    "authors": {
+      "Jenelle van Heerden": "All"
+    },
+    "files": [
+      {
+        "file": "garage_floor_diff_1k.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/garage_floor/garage_floor_diff_1k.jpg",
+        "bytes": 680146,
+        "md5": "061fa707904236f347ecc01600a817d7"
+      },
+      {
+        "file": "garage_floor_nor_gl_1k.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/garage_floor/garage_floor_nor_gl_1k.jpg",
+        "bytes": 530592,
+        "md5": "7bcecb9e669d3b95686c6e05892c4aa9"
+      },
+      {
+        "file": "garage_floor_rough_1k.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/garage_floor/garage_floor_rough_1k.jpg",
+        "bytes": 487150,
+        "md5": "c9b35d7450f75e1dd0f2ab3728544fea"
+      }
+    ]
+  },
+  {
+    "id": "painted_worn_brick",
+    "source": "https://polyhaven.com/a/painted_worn_brick",
+    "license": "CC0",
+    "licenseUrl": "https://polyhaven.com/license",
+    "authors": {
+      "Dimitrios Savva": "All"
+    },
+    "files": [
+      {
+        "file": "painted_worn_brick_diff_1k.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/painted_worn_brick/painted_worn_brick_diff_1k.jpg",
+        "bytes": 818739,
+        "md5": "496d32a03be8d2ca45201c3316a2fe79"
+      },
+      {
+        "file": "painted_worn_brick_nor_gl_1k.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/painted_worn_brick/painted_worn_brick_nor_gl_1k.jpg",
+        "bytes": 1062458,
+        "md5": "b6aee2fd4b7a7d94acc7fef07362bb41"
+      },
+      {
+        "file": "painted_worn_brick_rough_1k.jpg",
+        "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/painted_worn_brick/painted_worn_brick_rough_1k.jpg",
+        "bytes": 463375,
+        "md5": "c79a82a46a32256e6c32c2c7e091a84a"
+      }
+    ]
+  }
+]

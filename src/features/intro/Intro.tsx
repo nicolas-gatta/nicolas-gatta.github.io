@@ -30,6 +30,7 @@ export default function Intro({
     if (!active) return;
     const element = dialog.current;
     const previous = document.activeElement as HTMLElement | null;
+    const entryHash = window.location.hash;
     const overflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     element?.showModal();
@@ -40,7 +41,7 @@ export default function Intro({
       element?.close();
       document.body.style.overflow = overflow;
       // Deep links own their focus and scroll destination.
-      if (!window.location.hash.includes('section=')) {
+      if (!window.location.hash.includes('section=') || window.location.hash === entryHash) {
         const target =
           previous?.isConnected &&
           previous !== document.body &&

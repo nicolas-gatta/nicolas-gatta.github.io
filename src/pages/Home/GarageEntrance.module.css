@@ -1,0 +1,79 @@
+.entrance {
+  --garage-wall: #14242d;
+  --garage-side: #10202a;
+  --garage-roof: #1d343e;
+  --garage-line: #477685;
+  --garage-shadow: #091820b8;
+  position: absolute;
+  right: clamp(24px, 5vw, 100px);
+  bottom: 13%;
+  z-index: 3;
+  width: clamp(220px, 19vw, 280px);
+  max-width: calc(100% - 40px);
+  display: block;
+}
+.entrance > svg { display: block; width: 100%; height: auto; }
+.entrance[data-city-integrated='true'] { right: auto; bottom: auto; max-width: none; }
+.entrance[data-city-integrated='true'] > svg { display: none; }
+.entrance[data-city-integrated='true'] .sign {
+  left: var(--sign-left);
+  top: var(--sign-top);
+  width: var(--sign-width);
+  height: var(--sign-height);
+  min-height: 24px;
+  border-color: #6d9aa566;
+  background: #10202aef;
+  color: #b8dce2;
+  font-size: clamp(10px, 0.8vw, 12px);
+  box-shadow: 0 0 10px #5ac6dd0d, inset 0 -1px #68c8df22;
+  transition: color .2s, border-color .2s, background .2s;
+}
+.entrance[data-city-integrated='true']:hover .sign,
+.entrance[data-city-integrated='true']:focus-visible .sign { color: #e4f9fc; border-color: #7fcedd; background: #1d3540; }
+.entrance[data-city-integrated='true']:focus-visible { outline: none; }
+.entrance[data-city-integrated='true']:focus-visible .sign { outline: 2px solid #9ce9f6; outline-offset: 3px; }
+.sign {
+  position: absolute;
+  left: 12%;
+  top: 30%;
+  width: 63%;
+  min-height: 29px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 5px 4px;
+  border: 1px solid #a79462;
+  border-radius: 1px;
+  background: #292c22;
+  color: #f0d896;
+  font: 11px/1.4 'Inter Variable', sans-serif;
+  white-space: nowrap;
+}
+.sign svg { flex-shrink: 0; }
+.shutter { transition: transform .5s; transform-origin: 50% 46%; }
+.entrance:hover .shutter,
+.entrance:focus-visible .shutter { transform: scaleY(.38); }
+.entrance:hover .sign,
+.entrance:focus-visible .sign { border-color: #efd69c; color: #fff0c1; }
+.entrance:focus-visible { outline: 2px solid #efd69c; outline-offset: 6px; }
+:global(html[data-theme='light']) .entrance {
+  --garage-wall: #b8cbd0;
+  --garage-side: #7f9da8;
+  --garage-roof: #dae4e4;
+  --garage-line: #547784;
+  --garage-shadow: #718b9633;
+}
+:global(html[data-theme='light']) .entrance[data-city-integrated='true'] .sign { background: #d9e8e9f5; border-color: #557b89; color: #183b48; }
+:global(html[data-theme='light']) .entrance[data-city-integrated='true']:hover .sign,
+:global(html[data-theme='light']) .entrance[data-city-integrated='true']:focus-visible .sign { background: #edf7f7; border-color: #305b6c; color: #0e303e; }
+@media (max-width: 760px) {
+  .entrance { right: 20px; bottom: 70px; width: 220px; }
+}
+@media (max-width: 380px) {
+  .entrance { width: 205px; }
+  .sign { font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shutter { transition: none; }
+}

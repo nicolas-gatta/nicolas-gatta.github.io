@@ -1,0 +1,17 @@
+{
+  "downloadUrl": "https://raw.githubusercontent.com/pedrosoandre/carros/main/assets/nissan-skyline-r34.glb",
+  "sourceUrl": "https://sketchfab.com/3d-models/nissan-skyline-r34-gt-r-ff8fb2251dfa4bb9979e7022c5a6666c",
+  "name": "Nissan Skyline R34 GT-R",
+  "description": "Nissan Skyline R34 i made in blender 2.83.\nThis model still has a lot of geometry problems, but I'm too lazy to fix them... sorry..\n\n**I don’t always have the opportunity to read your comments, so if you have any questions or suggestions - feel free to dm me on twitter @Lexyc20**",
+  "author": "Lexyc16",
+  "authorUrl": "https://sketchfab.com/Lexyc16",
+  "license": {
+    "uri": "https://api.sketchfab.com/v3/licenses/322a749bcfa841b29dff1e8a1bb74b0b",
+    "label": "CC Attribution",
+    "fullName": "Creative Commons Attribution",
+    "requirements": "Author must be credited. Commercial use is allowed.",
+    "url": "http://creativecommons.org/licenses/by/4.0/",
+    "slug": "by"
+  },
+  "bytes": 3060072
+}

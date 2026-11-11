@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 import type { MotionValue } from 'framer-motion';
 import { createDigitalWorld } from './DigitalWorldRenderer';
 
@@ -8,6 +8,7 @@ export interface DigitalWorldProps {
   reducedMotion: boolean;
   active: boolean;
   variant: 'full' | 'short' | 'still';
+  garageEntrance: RefObject<HTMLAnchorElement>;
 }
 
 /** One persistent environment, shared by the opening shot and the settled hero. */
@@ -17,6 +18,7 @@ export default function DigitalWorld({
   reducedMotion,
   active,
   variant,
+  garageEntrance,
 }: DigitalWorldProps) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const settings = useRef({ reducedMotion, active, variant });
@@ -28,9 +30,10 @@ export default function DigitalWorld({
       canvas.current,
       progress,
       scrollProgress,
-      settings
+      settings,
+      garageEntrance
     );
-  }, [progress, scrollProgress, reducedMotion]);
+  }, [progress, scrollProgress, reducedMotion, garageEntrance]);
 
   return (
     <canvas

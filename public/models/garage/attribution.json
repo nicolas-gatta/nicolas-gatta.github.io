@@ -1,0 +1,116 @@
+[
+  {
+    "downloadUrl": "https://raw.githubusercontent.com/pedrosoandre/carros/main/assets/mazda-rx-7-fd.glb",
+    "sourceUrl": "https://sketchfab.com/3d-models/mazda-rx-7-fd-d35ff630df614771b82e7b2f59035b1e",
+    "name": "Mazda RX-7 FD",
+    "description": "Mazda Rx-7 FD i made in blender 2.82a\n\n**Update 25.05.2020:** added some details, and improvements.\n\n/:",
+    "author": "Lexyc16",
+    "authorUrl": "https://sketchfab.com/Lexyc16",
+    "license": {
+      "uri": "https://api.sketchfab.com/v3/licenses/322a749bcfa841b29dff1e8a1bb74b0b",
+      "label": "CC Attribution",
+      "fullName": "Creative Commons Attribution",
+      "requirements": "Author must be credited. Commercial use is allowed.",
+      "url": "http://creativecommons.org/licenses/by/4.0/",
+      "slug": "by"
+    },
+    "bytes": 3941268,
+    "file": "mazda-rx-7-fd.glb",
+    "changes": "Web-optimized by pedrosoandre/carros using weld, simplify, prune and meshopt compression. No additional mesh edits.",
+    "catalogUrl": "https://github.com/pedrosoandre/carros",
+    "catalogLicenseUrl": "https://github.com/pedrosoandre/carros/blob/main/LICENSE-3D-MODELS.md",
+    "displayChanges": "Normalized scale and position; original front +Z orientation retained. Body paint material cloned at runtime with roughness 0.3, metalness 0.6, environment intensity 1.2, clearcoat 1 and clearcoat roughness 0.08 for workshop lighting. Geometry and embedded textures unchanged.",
+    "orientation": {
+      "up": "+Y",
+      "front": "+Z",
+      "displayYawRadians": 0,
+      "preciseSize": [
+        1.2469472162,
+        0.8536404749,
+        2.8843879238
+      ]
+    },
+    "embeddedTextures": true,
+    "externalResourceUrls": [],
+    "requiredExtensions": [
+      "EXT_meshopt_compression",
+      "KHR_mesh_quantization"
+    ]
+  },
+  {
+    "downloadUrl": "https://raw.githubusercontent.com/pedrosoandre/carros/main/assets/nissan-skyline-r34.glb",
+    "sourceUrl": "https://sketchfab.com/3d-models/nissan-skyline-r34-gt-r-ff8fb2251dfa4bb9979e7022c5a6666c",
+    "name": "Nissan Skyline R34 GT-R",
+    "description": "Nissan Skyline R34 i made in blender 2.83.\nThis model still has a lot of geometry problems, but I'm too lazy to fix them... sorry..\n\n**I don’t always have the opportunity to read your comments, so if you have any questions or suggestions - feel free to dm me on twitter @Lexyc20**",
+    "author": "Lexyc16",
+    "authorUrl": "https://sketchfab.com/Lexyc16",
+    "license": {
+      "uri": "https://api.sketchfab.com/v3/licenses/322a749bcfa841b29dff1e8a1bb74b0b",
+      "label": "CC Attribution",
+      "fullName": "Creative Commons Attribution",
+      "requirements": "Author must be credited. Commercial use is allowed.",
+      "url": "http://creativecommons.org/licenses/by/4.0/",
+      "slug": "by"
+    },
+    "bytes": 3060072,
+    "file": "nissan-skyline-r34.glb",
+    "changes": "Web-optimized by pedrosoandre/carros using weld, simplify, prune and meshopt compression. No additional mesh edits.",
+    "catalogUrl": "https://github.com/pedrosoandre/carros",
+    "catalogLicenseUrl": "https://github.com/pedrosoandre/carros/blob/main/LICENSE-3D-MODELS.md",
+    "displayChanges": "Normalized scale and position; original front +Z orientation retained. Body paint material cloned at runtime with roughness 0.3, metalness 0.6, environment intensity 1.2, clearcoat 1 and clearcoat roughness 0.08 for workshop lighting. Geometry and embedded textures unchanged.",
+    "orientation": {
+      "up": "+Y",
+      "front": "+Z",
+      "displayYawRadians": 0,
+      "preciseSize": [
+        1.3673433644,
+        0.9731732663,
+        3.3403220773
+      ]
+    },
+    "embeddedTextures": true,
+    "externalResourceUrls": [],
+    "requiredExtensions": [
+      "EXT_meshopt_compression",
+      "KHR_mesh_quantization"
+    ]
+  },
+  {
+    "downloadUrl": "https://raw.githubusercontent.com/pedrosoandre/carros/main/assets/toyota-supra-mk.glb",
+    "sourceUrl": "https://sketchfab.com/3d-models/toyota-supra-mk-iv-1994-eb9bb1eb41db431cb078088ae1ce45f8",
+    "name": "Toyota Supra MK IV (1994)",
+    "description": "# IS THAT A SUPRA?\n![](https://cdna.artstation.com/p/assets/images/images/039/693/040/large/martin-trafas-supra-front.jpg?1626669949)![](https://cdnb.artstation.com/p/assets/images/images/039/693/041/large/martin-trafas-supra-back.jpg?1626669954)",
+    "author": "Martin Trafas",
+    "authorUrl": "https://sketchfab.com/TinoD2",
+    "license": {
+      "uri": "https://api.sketchfab.com/v3/licenses/322a749bcfa841b29dff1e8a1bb74b0b",
+      "label": "CC Attribution",
+      "fullName": "Creative Commons Attribution",
+      "requirements": "Author must be credited. Commercial use is allowed.",
+      "url": "http://creativecommons.org/licenses/by/4.0/",
+      "slug": "by"
+    },
+    "bytes": 10697472,
+    "file": "toyota-supra-mk.glb",
+    "changes": "Web-optimized by pedrosoandre/carros using weld, simplify, prune and meshopt compression. No additional mesh edits.",
+    "catalogUrl": "https://github.com/pedrosoandre/carros",
+    "catalogLicenseUrl": "https://github.com/pedrosoandre/carros/blob/main/LICENSE-3D-MODELS.md",
+    "displayChanges": "Normalized scale and position; original front +Z orientation retained. Body paint material cloned at runtime with roughness 0.3, metalness 0.6, environment intensity 1.2, clearcoat 1 and clearcoat roughness 0.08 for workshop lighting. Geometry and embedded textures unchanged.",
+    "orientation": {
+      "up": "+Y",
+      "front": "+Z",
+      "displayYawRadians": 0,
+      "preciseSize": [
+        1.9569623148,
+        1.2703125394,
+        4.5128991604
+      ]
+    },
+    "embeddedTextures": true,
+    "externalResourceUrls": [],
+    "requiredExtensions": [
+      "EXT_meshopt_compression",
+      "KHR_mesh_quantization"
+    ]
+  }
+]

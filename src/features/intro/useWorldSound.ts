@@ -232,13 +232,17 @@ export function useWorldSound({
     }
   }, []);
 
+  const resetSound = useCallback(() => {
+    wanted.current = false;
+    generation.current++;
+    dispose(engine.current);
+    engine.current = null;
+    setEnabled(false);
+  }, []);
+
   const toggleSound = useCallback(() => {
     if (wanted.current) {
-      wanted.current = false;
-      generation.current++;
-      dispose(engine.current);
-      engine.current = null;
-      setEnabled(false);
+      resetSound();
       return;
     }
     const Constructor = audioConstructor();
@@ -300,7 +304,7 @@ export function useWorldSound({
     } catch {
       fail();
     }
-  }, [available, fail, progress, variant]);
+  }, [available, fail, progress, variant, resetSound]);
 
   useEffect(() => {
     const current = engine.current;
@@ -390,5 +394,5 @@ export function useWorldSound({
     };
   }, [fail, progress, variant]);
 
-  return { enabled, available, toggleSound };
+  return { enabled, available, toggleSound, resetSound };
 }

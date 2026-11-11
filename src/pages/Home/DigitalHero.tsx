@@ -13,14 +13,14 @@ import {
   useTransform,
   type MotionValue,
 } from 'framer-motion';
-import { ArrowDown, MapPin } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { MapPin, RotateCcw } from 'lucide-react';
 import Intro from '../../features/intro/Intro';
 import { useWorldSequence } from '../../features/intro/useWorldSequence';
 import { useWorldSound } from '../../features/intro/useWorldSound';
 import { profile } from '../../data/profile';
 import styles from './DigitalHero.module.css';
 import ExperienceAirship from './ExperienceAirship';
+import GarageEntrance from './GarageEntrance';
 
 const DigitalWorld = lazy(() => import('../../features/intro/DigitalWorld'));
 class WorldBoundary extends Component<
@@ -107,10 +107,11 @@ function WorldFallback() {
 
 export default function DigitalHero() {
   const section = useRef<HTMLElement>(null);
-  const { variant, progress, active, reducedMotion, finish } =
+  const garageEntrance = useRef<HTMLAnchorElement>(null);
+  const { variant, progress, active, reducedMotion, finish, replay } =
     useWorldSequence();
   const scrollProgress = useMotionValue(0);
-  const { enabled, available, toggleSound } = useWorldSound({
+  const { enabled, available, toggleSound, resetSound } = useWorldSound({
     progress,
     active,
     reducedMotion,
@@ -183,23 +184,18 @@ export default function DigitalHero() {
               reducedMotion={reducedMotion}
               active={active}
               variant={variant}
+              garageEntrance={garageEntrance}
             />
           </Suspense>
         </WorldBoundary>
       </div>
       <div className={styles.shade} aria-hidden="true" />
       {!active && <ExperienceAirship />}
+      {!active && <GarageEntrance ref={garageEntrance} />}
       <motion.div
         className={styles.inner}
         style={{ borderColor: guideBorder }}
       >
-        <motion.div
-          className={styles.metadata}
-          style={{ opacity: metaOpacity }}
-        >
-          <span>ENGINEERING / WITH PURPOSE</span>
-          <span>PERSONAL PORTFOLIO — 2026</span>
-        </motion.div>
         <div className={styles.main}>
           <div className={styles.content}>
             <motion.p
@@ -251,6 +247,19 @@ export default function DigitalHero() {
                 <span>AI / DATA / SOFTWARE</span>
               </div>
               <p className={styles.statement}>{profile.statement}</p>
+              <button
+                type="button"
+                className={styles.replay}
+                disabled={active}
+                onClick={() => {
+                  resetSound();
+                  scrollProgress.set(0);
+                  replay();
+                }}
+              >
+                <RotateCcw size={13} aria-hidden="true" />
+                Replay intro
+              </button>
             </motion.div>
           </div>
           <motion.div
@@ -266,18 +275,6 @@ export default function DigitalHero() {
             </span>
           </motion.div>
         </div>
-        <motion.div className={styles.foot} style={{ opacity: detailsOpacity }}>
-          <Link to="/?section=about">
-            <span className={styles.scrollMark}>
-              <ArrowDown size={13} />
-            </span>
-            A little more about me
-          </Link>
-          <span>
-            <i />
-            BUILT ON CURIOSITY. DRIVEN BY ENGINEERING.
-          </span>
-        </motion.div>
         <motion.div
           className={styles.guide}
           style={{ scaleX: guideScale }}

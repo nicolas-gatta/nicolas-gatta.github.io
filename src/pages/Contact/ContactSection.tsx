@@ -2,10 +2,7 @@ import { useState } from 'react';
 import {
   ArrowUpRight,
   Check,
-  Code2,
   Copy,
-  ExternalLink,
-  Mail,
 } from 'lucide-react';
 import { profile } from '../../data/profile';
 import ConstructionGuide from '../../components/animations/ConstructionGuide';
@@ -79,26 +76,6 @@ export default function ContactSection({
             </span>
           </div>
         </div>
-      </div>
-      <div className={styles.channels}>
-        <a href={`mailto:${profile.email}`}>
-          <Mail size={16} />
-          <span>Email</span>
-          <ArrowUpRight size={13} />
-        </a>
-        <a href={profile.linkedin} target="_blank" rel="noreferrer">
-          <ExternalLink size={15} />
-          <span>LinkedIn</span>
-          <ArrowUpRight size={13} />
-          <span className="sr-only">(opens in a new tab)</span>
-        </a>
-        <a href={profile.github} target="_blank" rel="noreferrer">
-          <Code2 size={16} />
-          <span>GitHub</span>
-          <ArrowUpRight size={13} />
-          <span className="sr-only">(opens in a new tab)</span>
-        </a>
-        <span className={styles.based}>BELGIUM · OPEN TO CONVERSATION</span>
       </div>
     </section>
   );

@@ -1,40 +1,94 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
-import { useEffect, useRef } from 'react';
-import { Vector3 } from 'three';
-import { cars } from '../../data/cars';
+import { ContactShadows, Environment, Lightformer, OrbitControls, useProgress } from '@react-three/drei';
+import { Suspense, useEffect, useMemo, useRef } from 'react';
+import { ACESFilmicToneMapping, PCFSoftShadowMap, Vector3 } from 'three';
+import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
+import { garageCars } from '../../data/garageAssets';
 import { ContextGuard, useSceneVisibility } from '../../features/three/useSceneVisibility';
 import { useRenderTier } from '../../features/three/useRenderTier';
+import Workshop from '../garage/Workshop';
+import GarageVehicle, { vehicleCenters } from '../garage/GarageVehicle';
 
-function Vehicle({ index, selected, onSelect }: { index:number; selected:boolean; onSelect:()=>void }) {
-  const car=cars[index]; const x=(index-2)*3.4;
-  return <group position={[x,0.35,0]} scale={selected?1.05:0.88} onClick={e=>{e.stopPropagation();onSelect()}}>
-    <mesh position={[0,.35,0]}><boxGeometry args={[2.8,.5,1.35]}/><meshStandardMaterial color={car.color} metalness={.35} roughness={.38}/></mesh>
-    <mesh position={[.1,.78,0]}><boxGeometry args={[1.45,.48,1.18]}/><meshStandardMaterial color="#173746" metalness={.2} roughness={.3}/></mesh>
-    {[-.88,.88].flatMap((wheelX)=>[-.72,.72].map((z)=><mesh key={`${wheelX}-${z}`} position={[wheelX,.12,z]} rotation={[Math.PI/2,0,0]}><cylinderGeometry args={[.3,.3,.17,16]}/><meshStandardMaterial color="#070b0e" roughness={.8}/></mesh>))}
-    <mesh position={[0,.02,0]} rotation={[-Math.PI/2,0,0]}><planeGeometry args={[3.2,2]}/><meshBasicMaterial color={selected?'#163d48':'#10181e'}/></mesh>
-    {selected&&<pointLight position={[0,2,1]} color="#42c7e8" intensity={4} distance={4}/>}
-  </group>;
+interface GarageSceneProps {
+  selected: number;
+  overview: boolean;
+  reducedMotion: boolean;
+  onInspect: (index: number) => void;
+  onFailure: () => void;
+  onReady: () => void;
+  onProgress: (progress: number) => void;
 }
 
-function CameraRig({ selected }:{selected:number}) {
-  const {camera,invalidate}=useThree(); const target=useRef(new Vector3()); const active=useRef(true);
-  useEffect(()=>{active.current=true;invalidate()},[selected,invalidate]);
-  useFrame((_,delta)=>{if(!active.current)return; const x=(selected-2)*3.4; const wanted=new Vector3(x-5,3.2,6.5); const step=1-Math.exp(-delta*4); camera.position.lerp(wanted,step); target.current.lerp(new Vector3(x,.55,0),step); camera.lookAt(target.current); if(camera.position.distanceTo(wanted)<.02)active.current=false; else invalidate()});
-  return <OrbitControls enablePan={false} minDistance={5} maxDistance={8} target={[(selected-2)*3.4,.55,0]} minPolarAngle={.86} maxPolarAngle={1.34} minAzimuthAngle={-.9} maxAzimuthAngle={-.2}/>;
+function LoadingProgress({ onProgress }: { onProgress: GarageSceneProps['onProgress'] }) {
+  const { progress } = useProgress();
+  useEffect(() => onProgress(progress), [progress, onProgress]);
+  return null;
 }
 
-function Room({selected,onSelect}:{selected:number;onSelect:(i:number)=>void}) {
-  return <group><mesh position={[0,-.08,0]}><boxGeometry args={[19,.15,9]}/><meshStandardMaterial color="#11171b" roughness={.72} metalness={.1}/></mesh><gridHelper args={[20,40,'#284a58','#1b2c34']} position={[0,.01,0]}/>
-    {[-8.5,8.5].map(x=><mesh key={x} position={[x,2,-2]}><boxGeometry args={[.4,4,5]}/><meshStandardMaterial color="#171e24"/></mesh>)}
-    {cars.map((_,i)=><Vehicle key={i} index={i} selected={i===selected} onSelect={()=>onSelect(i)}/>)}
-    <mesh position={[0,3.4,-3.7]}><boxGeometry args={[18,.12,.12]}/><meshBasicMaterial color="#d7e9ed"/></mesh>
-  </group>;
+function Ready({ onReady }: { onReady: () => void }) {
+  const frames = useRef(0);
+  const invalidate = useThree((state) => state.invalidate);
+  useFrame(() => {
+    if (++frames.current === 3) onReady();
+    else if (frames.current < 3) invalidate();
+  });
+  return null;
 }
 
-export default function GarageScene({selected,onSelect,onFailure}:{selected:number;onSelect:(i:number)=>void;onFailure:()=>void}) {
-  const visible=useSceneVisibility(); const tier=useRenderTier();
-  return <Canvas role="img" aria-label="A three-dimensional garage containing five concept vehicles in separate bays. Select a vehicle in the scene or use the accessible bay controls below." camera={{position:[-11,3.2,6.5],fov:43}} dpr={tier==='high'?[1,1.5]:tier==='medium'?[1,1.25]:1} frameloop={visible?'demand':'never'} gl={{antialias:tier!=='low',alpha:true,powerPreference:'low-power'}} style={{position:'absolute',inset:0}}>
-    <ambientLight intensity={.45}/><directionalLight position={[0,7,4]} color="#e9f4f6" intensity={2.2}/><pointLight position={[0,3,2]} color="#f0b56a" intensity={3} distance={9}/><Room selected={selected} onSelect={onSelect}/><CameraRig selected={selected}/><ContextGuard onFailure={onFailure}/>
-  </Canvas>;
+function CameraRig({ selected, overview, reducedMotion }: Pick<GarageSceneProps, 'selected' | 'overview' | 'reducedMotion'>) {
+  const controls = useRef<OrbitControlsImpl>(null);
+  const { camera, invalidate, size } = useThree();
+  const moving = useRef(true);
+  const compact = size.width < 760;
+  const wanted = useMemo(() => overview
+    ? new Vector3(0, 4.2, compact ? 40 : 21)
+    : new Vector3(vehicleCenters[selected] - (compact ? 6.8 : 5.6), compact ? 3.1 : 2.8, compact ? 11.5 : 8.2),
+  [selected, overview, compact]);
+  const target = useMemo(() => overview
+    ? new Vector3(0, 1.3, -0.9)
+    : new Vector3(vehicleCenters[selected] + 0.55, 0.85, 0.15), [selected, overview]);
+  useEffect(() => { moving.current = true; invalidate(); }, [wanted, target, invalidate]);
+  useFrame((_, delta) => {
+    if (!moving.current || !controls.current) return;
+    const step = reducedMotion ? 1 : 1 - Math.exp(-Math.min(delta, 0.08) * 4);
+    camera.position.lerp(wanted, step);
+    controls.current.target.lerp(target, step);
+    controls.current.update();
+    if (camera.position.distanceTo(wanted) < 0.015 && controls.current.target.distanceTo(target) < 0.015) moving.current = false;
+    else invalidate();
+  });
+  return <OrbitControls ref={controls} makeDefault enablePan={false} enableDamping={!reducedMotion} dampingFactor={0.1} minDistance={4.5} maxDistance={overview ? 48 : 18} minPolarAngle={0.35} maxPolarAngle={Math.PI / 2 - 0.04} onStart={() => { moving.current = false; }} />;
+}
+
+export default function GarageScene(props: GarageSceneProps) {
+  const visible = useSceneVisibility();
+  const tier = useRenderTier();
+  return <>
+    <LoadingProgress onProgress={props.onProgress} />
+    <Canvas role="img" aria-label="A realistic workshop with three Japanese sports cars, vehicle lifts, tools and photo diagnostic monitors. Choose a car using the controls below."
+      shadows={tier !== 'low'} dpr={tier === 'high' ? [1, 1.5] : [1, 1.25]} frameloop={visible ? 'demand' : 'never'}
+      camera={{ position: [-13.1, 2.8, 8.2], fov: 48, near: 0.1, far: 140 }}
+      gl={{ antialias: true, alpha: false, powerPreference: 'high-performance', toneMapping: ACESFilmicToneMapping }}
+      onCreated={({ gl }) => { gl.toneMappingExposure = 1.05; gl.shadowMap.type = PCFSoftShadowMap; }}
+      style={{ position: 'absolute', inset: 0 }}>
+      <color attach="background" args={['#23251f']} />
+      <fog attach="fog" args={['#23251f', 36, 85]} />
+      <ambientLight intensity={0.35} color="#e5e1cc" />
+      <hemisphereLight args={['#e8edf2', '#494336', 0.65]} />
+      <directionalLight position={[-9, 12, 8]} intensity={2} color="#fff0da" castShadow={tier !== 'low'} shadow-mapSize={[2048, 2048]} shadow-camera-left={-25} shadow-camera-right={25} shadow-camera-top={18} shadow-camera-bottom={-18} shadow-bias={-0.0003} />
+      <Suspense fallback={null}>
+        <Environment frames={1} resolution={256}>
+          <Lightformer form="rect" intensity={4} position={[0, 7, 0]} rotation={[Math.PI / 2, 0, 0]} scale={[22, 5, 1]} color="#fff6e5" />
+          <Lightformer form="rect" intensity={2.5} position={[-14, 3, 6]} rotation={[0, Math.PI / 4, 0]} scale={[5, 8, 1]} color="#eff3f6" />
+          <Lightformer form="rect" intensity={2} position={[15, 4, -5]} rotation={[0, -Math.PI / 3, 0]} scale={[6, 6, 1]} color="#e5e5cb" />
+        </Environment>
+        <Workshop />
+        {garageCars.map((car, index) => <GarageVehicle key={car.id} index={index} onInspect={() => props.onInspect(index)} />)}
+        <ContactShadows position={[0, -0.035, 0]} frames={1} opacity={0.55} scale={32} width={32} height={16} blur={2.5} far={4.5} resolution={512} color="#171b13" />
+        <Ready onReady={props.onReady} />
+      </Suspense>
+      <CameraRig selected={props.selected} overview={props.overview} reducedMotion={props.reducedMotion} />
+      <ContextGuard onFailure={props.onFailure} />
+    </Canvas>
+  </>;
 }

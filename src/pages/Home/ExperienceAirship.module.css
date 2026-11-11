@@ -4,10 +4,11 @@
   --airship-shadow: #0a171e;
   --airship-line: #709eaa;
   position: absolute;
-  top: 12%;
-  right: clamp(48px, 8vw, 150px);
+  top: clamp(20px, 4svh, 48px);
+  right: clamp(24px, 5vw, 100px);
   z-index: 3;
   width: clamp(260px, 25vw, 380px);
+  max-width: calc(100% - 40px);
   aspect-ratio: 440 / 270;
   animation: appear 1s ease-out both;
 }
@@ -116,22 +117,20 @@
 }
 @media (max-width: 900px) {
   .airship {
-    top: 10%;
+    top: 24px;
     right: 20px;
-    width: 245px;
+    width: clamp(190px, 30vw, 260px);
   }
 }
 @media (max-width: 760px) {
   .airship {
-    top: max(450px, 46%);
+    top: 16px;
     right: 20px;
-    width: 230px;
+    width: clamp(180px, 48vw, 245px);
   }
-}
-@media (max-width: 380px) {
-  .airship {
-    right: 14px;
-    width: 215px;
+  .controls button {
+    width: 44px;
+    height: 44px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

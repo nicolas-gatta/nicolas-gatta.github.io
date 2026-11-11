@@ -93,7 +93,8 @@ try {
     assert(Math.abs(gap - 18) < 2, `Unexpected section gap: ${gap}px`);
   });
   await check('Menu follows scrolling, repeated links and dedicated routes', async () => {
-    for (const [id, name] of [['about', 'About'], ['experience', 'Experience'], ['projects', 'Projects'], ['cv', 'CV'], ['contact', 'Contact'], ['experience', 'Experience']]) {
+    // The compact CV and contact sections share the final viewport; Contact is current at the page end.
+    for (const [id, name] of [['about', 'About'], ['experience', 'Experience'], ['projects', 'Projects'], ['cv', 'Contact'], ['contact', 'Contact'], ['experience', 'Experience']]) {
       await page.locator(`#${id}`).evaluate((section) => section.scrollIntoView({ behavior: 'instant' }));
       await page.waitForFunction((name) => document.querySelector('nav a[aria-current]')?.textContent === name, name);
       assert.equal(await page.locator('nav a[aria-current]').count(), 1);
@@ -199,15 +200,36 @@ try {
       assert.equal(await cards.count(), count);
     };
     const technology = page.getByRole('combobox', { name: 'Filter by technology' });
+    const chooseTechnology = async (value) => {
+      await technology.fill(value);
+      await page.getByRole('option', { name: value, exact: true }).click();
+    };
+    await expectCards(6);
+    const status = page.getByRole('group', { name: 'Filter projects by status' });
+    await status.getByRole('button', { name: 'Released', exact: true }).click();
+    await expectCards(3);
+    await status.getByRole('button', { name: 'In development', exact: true }).click();
+    await expectCards(5);
+    await chooseTechnology('Python');
+    await expectCards(2);
+    await status.getByRole('button', { name: 'Released', exact: true }).click();
+    await expectCards(0);
+    await page.getByText('No projects match these filters.', { exact: true }).waitFor();
+    await page.getByRole('button', { name: 'Reset filters', exact: true }).click();
     await expectCards(6);
     await page.getByRole('button', { name: /^Expand/ }).click();
     await expectCards(8);
     await page.getByRole('button', { name: 'Collapse projects' }).click();
     await expectCards(6);
-    await technology.selectOption('Python');
+    await technology.fill('pyt');
+    await technology.press('ArrowDown');
+    await technology.press('Enter');
+    assert.equal(await technology.inputValue(), 'Python');
     await expectCards(3);
     assert.equal(await page.getByRole('link', { name: 'C-3BOT', exact: true }).count(), 1);
     assert.equal(await page.getByRole('link', { name: 'Cronario', exact: true }).count(), 0);
+    await status.getByRole('button', { name: 'Released', exact: true }).click();
+    await expectCards(2);
     await page.getByRole('link', { name: 'DermaTrack', exact: true }).click();
     await page.getByRole('heading', { level: 1, name: 'DermaTrack', exact: true }).waitFor();
     for (const position of [0, 0.5, 1]) {
@@ -226,15 +248,16 @@ try {
     await page.getByRole('link', { name: 'Back to projects', exact: true }).click();
     await page.waitForFunction(() => document.activeElement?.id === 'project-card-dermatrack');
     assert.equal(await technology.inputValue(), 'Python');
-    await expectCards(3);
-    await page.getByRole('button', { name: 'Clear filter', exact: true }).click();
+    assert.equal(await status.getByRole('button', { name: 'Released', exact: true }).getAttribute('aria-pressed'), 'true');
+    await expectCards(2);
+    await page.getByRole('button', { name: 'Clear filters', exact: true }).click();
     await page.getByRole('link', { name: 'Back to home', exact: true }).click();
     await page.waitForFunction(() => document.activeElement?.id === 'projects');
     await expectCards(3);
-    await technology.selectOption('Dart');
+    await chooseTechnology('Dart');
     assert.equal(await page.getByRole('link', { name: 'Tune Taker', exact: true }).count(), 1);
     await expectCards(1);
-    await page.getByRole('button', { name: 'Clear filter', exact: true }).click();
+    await page.getByRole('button', { name: 'Clear filters', exact: true }).click();
     await page.getByRole('button', { name: /^Expand/ }).click();
     await expectCards(8);
     await page.getByRole('link', { name: 'Energo-Sphere', exact: true }).click();
@@ -453,6 +476,19 @@ try {
       await intro.getByRole('link', { name: /Nicolas Gatta.*home/ }).click();
       await intro.getByRole('heading', { name: 'NICOLAS GATTA.' }).waitFor();
       assert.equal(await hero.getAttribute('data-intro-active'), 'false');
+      const replay = intro.getByRole('button', { name: 'Replay intro', exact: true });
+      const replayStarted = Date.now();
+      await replay.click();
+      assert.equal(await hero.getAttribute('data-intro-variant'), 'full');
+      assert.equal(await hero.getAttribute('data-intro-active'), 'true');
+      await intro.waitForFunction(() =>
+        document.querySelector('[data-testid="digital-hero"]')?.getAttribute('data-intro-active') === 'false');
+      assert(Date.now() - replayStarted >= 6000, 'Replay should run the full intro');
+      assert(await replay.evaluate((button) => document.activeElement === button));
+      await replay.click();
+      await intro.keyboard.press('Escape');
+      assert.equal(await hero.getAttribute('data-intro-active'), 'false');
+      assert.notEqual(await intro.evaluate(() => document.body.style.overflow), 'hidden');
       await first.close();
     }
   );

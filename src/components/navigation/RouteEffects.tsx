@@ -7,6 +7,7 @@ const titles: Record<string, string> = {
   '/cv': 'CV — Nicolas Gatta',
   '/projects': 'Selected Work — Nicolas Gatta',
   '/contact': 'Contact — Nicolas Gatta',
+  '/garage': 'Dream garage — Nicolas Gatta',
 };
 export default function RouteEffects() {
   const { pathname, search, key, state } = useLocation();
@@ -23,6 +24,7 @@ export default function RouteEffects() {
     const withoutProjectFilters = (value: string) => {
       const params = new URLSearchParams(value);
       params.delete('technology');
+      params.delete('status');
       params.delete('expanded');
       return params.toString();
     };

@@ -1,6 +1,5 @@
 .contact {
   position: relative;
-  min-height: calc(100svh - var(--header-height) - 18px);
   padding: 55px 0 75px;
   border-top: 1px solid var(--line);
 }
@@ -107,32 +106,6 @@
 .copyRow button:hover {
   color: var(--accent);
 }
-.channels {
-  display: flex;
-  gap: 30px;
-  align-items: center;
-  border-top: 1px solid var(--line);
-  margin-top: 40px;
-  padding-top: 25px;
-}
-.channels a {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 11px;
-}
-.channels a:hover {
-  color: var(--accent-dark);
-}
-.channels a > svg:last-of-type {
-  color: var(--muted);
-}
-.based {
-  margin-left: auto;
-  color: var(--muted);
-  font: 8px var(--mono);
-  letter-spacing: 0.05em;
-}
 @media (max-width: 760px) {
   .contact {
     padding-block: 45px 60px;
@@ -156,20 +129,6 @@
   .email {
     font-size: clamp(17px, 4.9vw, 26px);
     gap: 12px;
-  }
-  .channels {
-    gap: 23px;
-    flex-wrap: wrap;
-    margin-top: 34px;
-  }
-  .channels a {
-    font-size: 11px;
-  }
-  .based {
-    width: 100%;
-    margin-left: 0;
-    margin-top: 9px;
-    font-size: 7px;
   }
   .copyRow {
     flex-wrap: wrap;

@@ -1,0 +1,17 @@
+{
+  "downloadUrl": "https://raw.githubusercontent.com/pedrosoandre/carros/main/assets/toyota-supra-mk.glb",
+  "sourceUrl": "https://sketchfab.com/3d-models/toyota-supra-mk-iv-1994-eb9bb1eb41db431cb078088ae1ce45f8",
+  "name": "Toyota Supra MK IV (1994)",
+  "description": "# IS THAT A SUPRA?\n![](https://cdna.artstation.com/p/assets/images/images/039/693/040/large/martin-trafas-supra-front.jpg?1626669949)![](https://cdnb.artstation.com/p/assets/images/images/039/693/041/large/martin-trafas-supra-back.jpg?1626669954)",
+  "author": "Martin Trafas",
+  "authorUrl": "https://sketchfab.com/TinoD2",
+  "license": {
+    "uri": "https://api.sketchfab.com/v3/licenses/322a749bcfa841b29dff1e8a1bb74b0b",
+    "label": "CC Attribution",
+    "fullName": "Creative Commons Attribution",
+    "requirements": "Author must be credited. Commercial use is allowed.",
+    "url": "http://creativecommons.org/licenses/by/4.0/",
+    "slug": "by"
+  },
+  "bytes": 10697472
+}

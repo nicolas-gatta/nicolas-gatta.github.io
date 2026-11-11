@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { projects } from '../../data/projects';
+import TechnologyFilter from './TechnologyFilter';
 import styles from './ProjectExplorer.module.css';
 
 const orderedProjects = [...projects].sort(
@@ -15,6 +16,11 @@ const orderedProjects = [...projects].sort(
 );
 const technologies = [...new Set(projects.flatMap((project) => project.tags))]
   .sort((a, b) => a.localeCompare(b));
+const statuses = [
+  { value: 'released', label: 'Released', match: 'RELEASED' },
+  { value: 'development', label: 'In development', match: 'IN DEVELOPMENT' },
+  { value: 'maintained', label: 'Actively maintained', match: 'ACTIVELY MAINTAINED' },
+];
 
 export default function ProjectExplorer({
   initialCount = 3,
@@ -27,13 +33,21 @@ export default function ProjectExplorer({
   const location = useLocation();
   const id = useId();
   const toggle = useRef<HTMLButtonElement>(null);
-  const requestedTechnology = params.get('technology') || '';
-  const technology = technologies.includes(requestedTechnology)
-    ? requestedTechnology
-    : '';
+  const technology = params.get('technology') || '';
+  const query = technology.trim().toLowerCase();
+  const exactTechnology = technologies.find((item) => item.toLowerCase() === query);
+  const selectedStatuses = statuses.filter((status) =>
+    params.getAll('status').includes(status.value)
+  );
+  const isMatchingTag = (tag: string) => exactTechnology
+    ? tag === exactTechnology
+    : tag.toLowerCase().includes(query);
   const expanded = params.get('expanded') === 'true';
   const matches = orderedProjects.filter(
-    (project) => !technology || project.tags.includes(technology)
+    (project) =>
+      (!query || project.tags.some(isMatchingTag)) &&
+      (selectedStatuses.length === 0 ||
+        selectedStatuses.some((status) => status.match === project.year))
   );
   const visible = expanded ? matches : matches.slice(0, initialCount);
   const Heading = `h${headingLevel}` as 'h2' | 'h3';
@@ -46,6 +60,26 @@ export default function ProjectExplorer({
     if (value) next.set('technology', value);
     else next.delete('technology');
     next.delete('expanded');
+    setParams(next, { replace: true });
+  };
+
+  const filterStatus = (value: string) => {
+    const selected = selectedStatuses.map((status) => status.value);
+    const nextStatuses = !value ? [] : selected.includes(value)
+      ? selected.filter((status) => status !== value)
+      : [...selected, value];
+    const next = new URLSearchParams(params);
+    next.delete('status');
+    if (nextStatuses.length < statuses.length) {
+      nextStatuses.forEach((status) => next.append('status', status));
+    }
+    next.delete('expanded');
+    setParams(next, { replace: true });
+  };
+
+  const clearFilters = () => {
+    const next = new URLSearchParams(params);
+    ['technology', 'status', 'expanded'].forEach((key) => next.delete(key));
     setParams(next, { replace: true });
   };
 
@@ -64,30 +98,39 @@ export default function ProjectExplorer({
   return (
     <div className={styles.explorer}>
       <div className={styles.toolbar}>
-        <label className={styles.filter} htmlFor={`${id}-technology`}>
-          <span>
+        <div className={styles.filter}>
+          <label htmlFor={`${id}-technology`}>
             <SlidersHorizontal size={13} aria-hidden="true" />
             Filter by technology
-          </span>
-          <span className={styles.selectWrap}>
-            <select
-              id={`${id}-technology`}
-              value={technology}
-              onChange={(event) => filter(event.target.value)}
-            >
-              <option value="">All technologies</option>
-              {technologies.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-            <ChevronDown size={14} aria-hidden="true" />
-          </span>
-        </label>
-        {technology && (
-          <button type="button" className={styles.clear} onClick={() => filter('')}>
-            <X size={13} aria-hidden="true" />Clear filter
+          </label>
+          <TechnologyFilter
+            id={`${id}-technology`}
+            options={technologies}
+            value={technology}
+            onChange={filter}
+          />
+        </div>
+        <div className={styles.statusRow}>
+          <span className={styles.statusLabel}>Status</span>
+          <div className={styles.statusTags} role="group" aria-label="Filter projects by status">
+            <button type="button" aria-pressed={selectedStatuses.length === 0} onClick={() => filterStatus('')}>
+              All statuses
+            </button>
+            {statuses.map((status) => (
+              <button
+                key={status.value}
+                type="button"
+                aria-pressed={selectedStatuses.includes(status)}
+                onClick={() => filterStatus(status.value)}
+              >
+                {status.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        {(technology || selectedStatuses.length > 0) && (
+          <button type="button" className={styles.clear} onClick={clearFilters}>
+            <X size={13} aria-hidden="true" />Clear filters
           </button>
         )}
         <p className={styles.count} role="status" aria-atomic="true">
@@ -115,7 +158,7 @@ export default function ProjectExplorer({
               {project.tags.map((tag) => (
                 <span
                   key={tag}
-                  className={tag === technology ? styles.matchedTag : undefined}
+                  className={query && isMatchingTag(tag) ? styles.matchedTag : undefined}
                 >
                   {tag}
                 </span>
@@ -131,6 +174,13 @@ export default function ProjectExplorer({
           </Link>
         ))}
       </div>
+      {matches.length === 0 && (
+        <div className={styles.empty}>
+          <p>No projects match these filters.</p>
+          <span>Try another technology or status.</span>
+          <button type="button" className="button" onClick={clearFilters}>Reset filters</button>
+        </div>
+      )}
       {matches.length > initialCount && (
         <div className={styles.expandRow}>
           <button
