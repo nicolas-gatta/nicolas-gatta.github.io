@@ -1,10 +1,12 @@
 import type { ReactNode } from 'react';
 import { Terminal } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Navigation from '../navigation/Navigation';
+import BackNavigation from '../navigation/BackNavigation';
 import styles from './Layout.module.css';
 
 export default function Layout({ children }: { children: ReactNode }) {
+  const { pathname } = useLocation();
   return (
     <>
       <a
@@ -20,8 +22,9 @@ export default function Layout({ children }: { children: ReactNode }) {
       <Navigation />
       <main id="main-content" tabIndex={-1}>
         {children}
+        <BackNavigation />
       </main>
-      <footer className={styles.footer}>
+      <footer className={`${styles.footer} ${pathname !== '/' ? styles.withBack : ''}`}>
         <div className={`page-shell ${styles.inner}`}>
           <div>
             <Link to="/" className={styles.logo}>

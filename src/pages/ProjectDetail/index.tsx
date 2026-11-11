@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 import { ArrowLeft, ArrowRight, ArrowUpRight, Code2 } from 'lucide-react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
+import type { ProjectReturnState } from '../../components/navigation/BackNavigation';
 import { projects } from '../../data/projects';
 import ProjectVisual from '../Projects/ProjectVisual';
 import styles from './ProjectDetail.module.css';
 
 export default function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const { state } = useLocation();
   const project = projects.find((item) => item.id === id);
   useEffect(() => {
     if (project) {
@@ -41,9 +43,6 @@ export default function ProjectDetailPage() {
 
   return (
     <article className={`page-shell ${styles.page}`}>
-      <Link className={styles.back} to="/projects">
-        <ArrowLeft size={14} aria-hidden="true" /> ALL PROJECTS
-      </Link>
       <header className={styles.header}>
         <p className="eyebrow">
           PROJECT / {project.number} <span className={styles.slash}>/</span>{' '}
@@ -164,15 +163,21 @@ export default function ProjectDetailPage() {
           </section>
         </div>
       </div>
-      <Link to={`/projects/${nextProject.id}`} className={styles.next}>
-        <div>
-          <span className="eyebrow">NEXT SYSTEM / {nextProject.number}</span>
-          <h2>{nextProject.title}</h2>
-        </div>
-        <span className={styles.nextArrow}>
-          <ArrowUpRight size={32} aria-hidden="true" />
-        </span>
-      </Link>
+      <nav aria-label="Project navigation">
+        <Link
+          to={`/projects/${nextProject.id}`}
+          state={state as ProjectReturnState | null}
+          className={styles.next}
+        >
+          <div>
+            <span className="eyebrow">NEXT SYSTEM / {nextProject.number}</span>
+            <h2>{nextProject.title}</h2>
+          </div>
+          <span className={styles.nextArrow}>
+            <ArrowUpRight size={32} aria-hidden="true" />
+          </span>
+        </Link>
+      </nav>
     </article>
   );
 }

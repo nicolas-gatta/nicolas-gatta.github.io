@@ -219,14 +219,6 @@
   background: #4cc3db;
   box-shadow: 0 0 8px #54c7df44;
 }
-.worldCoordinates {
-  writing-mode: vertical-rl;
-  position: absolute;
-  right: -5px;
-  bottom: 125px;
-  font-size: 7px;
-  color: #829ca7;
-}
 .foot {
   position: relative;
   display: flex;
@@ -316,9 +308,6 @@
   }
   .worldNote {
     bottom: 30px;
-  }
-  .worldCoordinates {
-    display: none;
   }
 }
 @media (max-width: 760px) {
@@ -441,7 +430,7 @@
 }
 :global(html[data-theme='light']) .hero[data-intro-active='false'] :is(
   .metadata, .location, .statement, .role span:last-child,
-  .worldNote, .worldCoordinates, .foot
+  .worldNote, .foot
 ) {
   color: var(--muted);
 }

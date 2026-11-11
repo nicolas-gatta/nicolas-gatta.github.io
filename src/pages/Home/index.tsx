@@ -12,8 +12,7 @@ import {
 import { Link } from 'react-router-dom';
 import DigitalHero from './DigitalHero';
 import ConstructionGuide from '../../components/animations/ConstructionGuide';
-import { projects } from '../../data/projects';
-import ProjectVisual from '../Projects/ProjectVisual';
+import ProjectExplorer from '../../components/projects/ProjectExplorer';
 import ExperienceTimeline from './ExperienceTimeline';
 import ContactSection from '../Contact/ContactSection';
 import styles from './Home.module.css';
@@ -141,37 +140,42 @@ export default function Home() {
                 how things connect<span className={styles.accent}>.</span>
               </h2>
               <p className={styles.aboutLead}>
-                And then building something
+                And build something
                 <br />
                 that makes them work together.
               </p>
             </div>
             <div className={styles.aboutCopy}>
               <p>
-                I’m Nicolas, a Data Engineer with a background in artificial
-                intelligence, data analytics and software engineering.
+                Hello, hello! Welcome to my humble website.
               </p>
               <p>
-                I enjoy the whole picture: turning raw data into useful
-                information, connecting intelligent models to real applications,
-                and building the infrastructure that keeps everything running.
+                I’m Nicolas, a Data Engineer and AI Engineer with a background
+                spanning artificial intelligence, software engineering and
+                electronics.
               </p>
               <p>
-                Outside of work, that same curiosity finds its way into my
-                homelab, electronics and whatever I’m taking apart next.
+                Quite the mix, isn’t it? That’s what happens when you love
+                figuring things out for yourself: you build software, learn new
+                skills and tinker with whatever might make life a little simpler
+                (even if it sometimes makes things harder).
+              </p>
+              <p>
+                Feel free to explore and enjoy your stay. You might even find a
+                few of the Easter eggs I’ve hidden here and there.
               </p>
               <div className={styles.identity}>
                 <span>
                   LOCATION<strong>Belgium</strong>
                 </span>
                 <span>
-                  LANGUAGES<strong>FR / EN / NL</strong>
+                  LANGUAGES<strong>FR / EN</strong>
                 </span>
                 <span>
                   STATUS
                   <strong>
                     <i />
-                    Building things
+                    In progress
                   </strong>
                 </span>
               </div>
@@ -212,49 +216,7 @@ export default function Home() {
             A selection of systems, experiments and things built out of
             curiosity.
           </p>
-          <div className={styles.projectGrid}>
-            {projects
-              .filter((p) => p.featured)
-              .map((project) => (
-                <Link
-                  to={`/projects/${project.id}`}
-                  className={styles.project}
-                  key={project.id}
-                >
-                  <div className={styles.projectImage}>
-                    <div className={styles.projectLabel}>
-                      PROJECT / {project.number}
-                      <span>↗</span>
-                    </div>
-                    <ProjectVisual type={project.visual} />
-                  </div>
-                  <div className={styles.projectInfo}>
-                    <span className={styles.projectCategory}>
-                      {project.category}
-                    </span>
-                    <h3>
-                      {project.title}
-                      <ArrowUpRight size={19} />
-                    </h3>
-                    <p>{project.summary}</p>
-                    <div className={styles.tags}>
-                      {project.tags.slice(0, 3).map((tag) => (
-                        <span key={tag} className="tag">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                    <div className={styles.projectBottom}>
-                      <span>{project.year}</span>
-                      <span>
-                        OPEN PROJECT
-                        <ArrowRight size={12} />
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-          </div>
+          <ProjectExplorer />
           <p className={styles.contentNote}>
             Project scope, technologies and status sourced from the current CV.
           </p>

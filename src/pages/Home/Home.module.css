@@ -125,10 +125,92 @@
   margin-top: -6px;
   margin-bottom: 33px;
 }
+.experienceConnection {
+  position: relative;
+  margin-top: 42px;
+}
+.experienceConnection[data-state='pending'] .timeline,
+.experienceConnection[data-state='loading'] .timeline {
+  visibility: hidden;
+}
+.experienceConnection[data-state='ready'] .timeline {
+  animation: connection-reveal 0.4s ease-out both;
+}
+.connectionLoader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 28px;
+}
+.connectionCaption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  font: 9px/1.8 var(--mono);
+  letter-spacing: 0.08em;
+  color: var(--accent-dark);
+}
+.connectionCaption > span:last-child {
+  color: var(--muted);
+  letter-spacing: 0;
+}
+.connectionTrack {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 1px;
+  margin-inline: 5px;
+  background: var(--line-strong);
+}
+.connectionTrack::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--accent-dark), var(--accent), var(--highlight));
+  box-shadow: 0 0 12px var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: connection-trace 2.4s ease-in-out both;
+}
+.connectionTrack i {
+  position: relative;
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  background: var(--background);
+  animation: connection-node 0.5s ease-out both;
+}
+.connectionTrack i:nth-child(2) { animation-delay: 1.2s; }
+.connectionTrack i:nth-child(3) { animation-delay: 2s; }
+.experienceConnection[data-state='pending'] .connectionTrack::before,
+.experienceConnection[data-state='pending'] .connectionTrack i {
+  animation-play-state: paused;
+}
+@keyframes connection-trace {
+  to { transform: scaleX(1); }
+}
+@keyframes connection-node {
+  to {
+    background: var(--accent);
+    box-shadow: 0 0 14px var(--accent);
+  }
+}
+@keyframes connection-reveal {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media print {
+  .experienceConnection .timeline { visibility: visible !important; }
+  .connectionLoader { display: none; }
+}
 .timeline {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  margin-top: 42px;
 }
 .milestone button {
   display: flex;
@@ -243,117 +325,6 @@
   color: var(--muted);
   margin-top: 28px;
   margin-bottom: 0;
-}
-.projectGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
-}
-.project {
-  min-width: 0;
-  border: 1px solid var(--line);
-  transition:
-    border-color 0.2s,
-    transform 0.3s;
-  background: var(--surface);
-  border-radius: 2px;
-  overflow: hidden;
-}
-.project:hover {
-  border-color: var(--accent);
-  transform: translateY(-4px);
-}
-.projectImage {
-  position: relative;
-  background: var(--surface-raised);
-  border-bottom: 1px solid var(--line);
-  aspect-ratio: 1.55;
-  overflow: hidden;
-}
-.projectImage > svg {
-  width: 100%;
-  height: 100%;
-  padding: 25px 0 0;
-}
-.projectImage > div:last-child {
-  height: 100%;
-  width: 100%;
-  padding-top: 21px;
-}
-.projectLabel {
-  position: absolute;
-  top: 15px;
-  left: 17px;
-  right: 17px;
-  display: flex;
-  justify-content: space-between;
-  color: var(--muted);
-  font: 8px var(--mono);
-  letter-spacing: 0.04em;
-  z-index: 1;
-}
-.projectLabel > span {
-  color: var(--accent);
-  font-size: 16px;
-  line-height: 1;
-}
-.projectInfo {
-  padding: 23px 21px 0;
-}
-.projectCategory {
-  font: 8px var(--mono);
-  text-transform: uppercase;
-  color: var(--muted);
-  letter-spacing: 0.05em;
-}
-.projectInfo h3 {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 23px;
-  font-weight: 500;
-  letter-spacing: -0.05em;
-  margin: 8px 0 10px;
-}
-.projectInfo h3 svg {
-  color: var(--accent);
-  transition: transform 0.2s;
-}
-.project:hover h3 svg {
-  transform: translate(2px, -2px);
-}
-.projectInfo p {
-  font-size: 11px;
-  line-height: 1.8;
-  color: var(--muted);
-  min-height: 60px;
-}
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  min-height: 44px;
-}
-.tags > span {
-  font-size: 8px;
-  padding: 3px 6px;
-  align-self: flex-start;
-}
-.projectBottom {
-  border-top: 1px solid var(--line);
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 18px;
-  padding-block: 16px;
-  font: 8px var(--mono);
-  color: var(--muted);
-}
-.projectBottom > span:last-child {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--accent);
 }
 .cvCallout {
   display: flex;
@@ -471,12 +442,6 @@
   .aboutGrid {
     gap: 45px;
   }
-  .projectInfo {
-    padding-inline: 16px;
-  }
-  .projectBottom {
-    font-size: 7px;
-  }
   .focusItem {
     padding: 20px;
   }
@@ -484,18 +449,6 @@
 @media (max-width: 900px) {
   .section {
     padding-block: 75px;
-  }
-  .projectGrid {
-    gap: 14px;
-  }
-  .projectInfo h3 {
-    font-size: 20px;
-  }
-  .projectInfo p {
-    min-height: 79px;
-  }
-  .projectBottom > span:first-child {
-    font-size: 6px;
   }
   .focusItem {
     padding: 16px;
@@ -558,10 +511,12 @@
     max-width: 330px;
     line-height: 1.8;
   }
+  .experienceConnection {
+    margin-top: 30px;
+  }
   .timeline {
     grid-template-columns: 1fr;
     gap: 0;
-    margin-top: 30px;
   }
   .milestone button {
     padding: 0 0 34px 30px;
@@ -602,33 +557,6 @@
   .timelineAction {
     font-size: 8px;
     margin-top: 9px;
-  }
-  .projectGrid {
-    grid-template-columns: 1fr;
-    gap: 23px;
-  }
-  .projectImage {
-    aspect-ratio: 1.85;
-  }
-  .projectInfo {
-    padding: 22px 23px 0;
-  }
-  .projectInfo h3 {
-    font-size: 26px;
-  }
-  .projectInfo p {
-    font-size: 12px;
-    min-height: 0;
-  }
-  .tags {
-    min-height: 0;
-  }
-  .tags > span {
-    font-size: 9px;
-  }
-  .projectBottom,
-  .projectBottom > span:first-child {
-    font-size: 8px;
   }
   .cvCallout {
     flex-wrap: wrap;

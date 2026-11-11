@@ -1,3 +1,5 @@
+import { profile } from '../../data/profile';
+
 export type TerminalAction =
   | 'projects'
   | 'cv'
@@ -53,7 +55,7 @@ export function executeCommand(input: string): CommandResponse {
           'Nicolas Gatta',
           'AI Engineer | Data Engineer · Belgium',
           '',
-          'I build intelligent systems, data platforms and software.',
+          profile.statement,
           'Curiosity is usually where the interesting work begins.',
         ],
       };
@@ -85,7 +87,7 @@ export function executeCommand(input: string): CommandResponse {
           'Nicolas@portfolio',
           'Role       AI Engineer | Data Engineer',
           'Focus      AI / Data / Software',
-          'Languages  FR / EN / NL',
+          'Languages  FR / EN',
           'Location   Belgium',
           'Stack      Python / SQL / PyTorch / Databricks',
           'Uptime     Still curious',

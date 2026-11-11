@@ -4,9 +4,10 @@ import type { Profile } from './models';
 export const profile: Profile = {
   name: 'Nicolas Gatta',
   role: 'AI Engineer | Data Engineer',
-  statement: 'I build intelligent systems, data platforms and software.',
+  statement:
+    'Building intelligent systems, tinkering with data and creating software to solve real-world problems.',
   location: 'Belgium',
-  languages: ['French (Native)', 'English (C1)', 'Dutch (Basic)'],
+  languages: ['French (Native)', 'English (C1)'],
   email: 'nicolasgatta1@gmail.com',
   github: 'https://github.com/nicolas-gatta',
   linkedin: 'https://www.linkedin.com/in/nicolas-gatta',

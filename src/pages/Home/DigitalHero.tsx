@@ -264,9 +264,6 @@ export default function DigitalHero() {
               <br />
               <strong>TO CONNECTED SYSTEMS.</strong>
             </span>
-            <span className={styles.worldCoordinates}>
-              01 — INFINITE POSSIBILITIES
-            </span>
           </motion.div>
         </div>
         <motion.div className={styles.foot} style={{ opacity: detailsOpacity }}>

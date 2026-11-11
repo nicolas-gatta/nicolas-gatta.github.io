@@ -2,20 +2,8 @@
   padding-top: 48px;
   padding-bottom: 80px;
 }
-.back {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  text-decoration: none;
-  color: var(--muted);
-  font: 10px/1.5 var(--mono);
-  letter-spacing: 1px;
-}
-.back:hover {
-  color: var(--accent-dark);
-}
 .header {
-  padding: 46px 0 38px;
+  padding: 0 0 38px;
 }
 .slash {
   display: inline-block;
@@ -201,11 +189,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 24px;
+  border-top: 1px solid var(--line);
+  padding-top: 32px;
+  margin-top: 10px;
   text-decoration: none;
   color: var(--ink);
-  border-top: 1px solid var(--line);
-  padding-top: 35px;
-  margin-top: 10px;
 }
 .next h2 {
   font-size: 40px;

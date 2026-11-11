@@ -110,6 +110,50 @@ try {
       assert.equal(await page.getByRole('link', { name, exact: true }).getAttribute('aria-current'), 'page');
     }
   });
+  await check('Experience connects on view, reveals without layout shifts and stays connected', async () => {
+    for (const [width, theme] of [[1440, 'dark'], [390, 'light']]) {
+      const animated = await browser.newContext({
+        viewport: { width, height: 1000 }, reducedMotion: 'no-preference',
+      });
+      await animated.addInitScript((theme) => localStorage.setItem('ng:theme', theme), theme);
+      const scene = await animated.newPage();
+      scene.on('pageerror', (error) => errors.push(error.message));
+      await scene.goto(base);
+      await scene.getByRole('button', { name: 'Skip intro and explore the portfolio' }).click();
+      const connection = scene.locator('#experience [aria-busy]');
+      assert.equal(await connection.getAttribute('data-state'), 'pending');
+      await scene.locator('#experience').evaluate((section) => section.scrollIntoView({ behavior: 'instant' }));
+      await scene.getByRole('status').filter({ hasText: 'CONNECTING EXPERIENCE' }).waitFor();
+      await scene.waitForFunction(() => document.querySelector('#experience [aria-busy]')?.dataset.state === 'loading');
+      const started = Date.now();
+      const bounds = await connection.boundingBox();
+      assert.equal(await scene.getByRole('button', { name: /2026/ }).count(), 0);
+      // Let the existing section materialization finish before capturing the loader.
+      await scene.waitForTimeout(700);
+      await scene.screenshot({ path: `.qa/experience-loading-${width}-${theme}.png` });
+      await scene.waitForFunction(() => document.querySelector('#experience [aria-busy]')?.dataset.state === 'ready');
+      assert(Date.now() - started >= 2000, 'Connection should take a few seconds');
+      assert.equal(await connection.getAttribute('aria-busy'), 'false');
+      assert.equal((await connection.boundingBox()).height, bounds.height);
+      await scene.getByRole('button', { name: /2026/ }).click();
+      await scene.locator('#experience-details').getByRole('heading', { name: 'IBM FutureNow Center' }).waitFor();
+      await scene.screenshot({ path: `.qa/experience-ready-${width}-${theme}.png` });
+      assert(await scene.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+      await scene.getByRole('link', { name: 'Full CV', exact: true }).click();
+      await scene.getByRole('link', { name: /Nicolas Gatta.*home/ }).click();
+      await scene.getByTestId('digital-hero').waitFor();
+      assert.equal(await connection.getAttribute('data-state'), 'ready');
+      await animated.close();
+    }
+    // A preference change during the connection should reveal content immediately.
+    const animated = await browser.newContext({ reducedMotion: 'no-preference' });
+    const scene = await animated.newPage();
+    await scene.goto(`${base}#/?section=experience`);
+    await scene.waitForFunction(() => document.querySelector('#experience [aria-busy]')?.dataset.state === 'loading');
+    await scene.emulateMedia({ reducedMotion: 'reduce' });
+    await scene.waitForFunction(() => document.querySelector('#experience [aria-busy]')?.dataset.state === 'ready');
+    await animated.close();
+  });
   await check('Section trails build once, including after leaving Home', async () => {
     const animated = await browser.newContext({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'no-preference' });
     const scene = await animated.newPage();
@@ -145,42 +189,65 @@ try {
     assert.deepEqual(await scene.locator('[data-construction]').evaluateAll((sections) => sections.map((section) => section.dataset.construction)), Array(5).fill('ready'));
     await animated.close();
   });
-  await check('Project filters, search and detail refresh', async () => {
+  await check('Compact projects, technology filters, expansion and return navigation', async () => {
     await page.goto(`${base}#/projects`);
-    await page.getByRole('heading', { level: 1 }).waitFor();
-    const search = page.getByRole('searchbox');
-    await page
-      .getByRole('button', { name: 'Artificial Intelligence', exact: true })
-      .click();
-    assert.equal(
-      await page
-        .getByRole('button', { name: 'Artificial Intelligence', exact: true })
-        .getAttribute('aria-pressed'),
-      'true'
-    );
-    await search.fill('Unmonitarr');
-    await page.getByRole('heading', { name: /No matching/ }).waitFor();
-    await page.getByRole('button', { name: 'All work', exact: true }).click();
-    assert.equal(
-      await page.locator('a[href="#/projects/unmonitarr"]').count(),
-      1
-    );
-    await search.fill('DermaTrack');
-    assert.equal(
-      await page.locator('a[href="#/projects/dermatrack"]').count(),
-      1
-    );
-    await search.fill('no-such-project-000');
-    await page.getByRole('heading', { name: /No matching/ }).waitFor();
-    await search.fill('');
-    await page.locator('a[href="#/projects/dermatrack"]').click();
-    await page
-      .getByRole('heading', { name: 'DermaTrack', exact: true })
-      .waitFor();
+    await page.getByRole('heading', { level: 1, name: /Built with/ }).waitFor();
+    const cards = page.locator('[id^="project-card-"]');
+    const expectCards = async (count) => {
+      await page.waitForFunction((expected) =>
+        document.querySelectorAll('[id^="project-card-"]').length === expected, count);
+      assert.equal(await cards.count(), count);
+    };
+    const technology = page.getByRole('combobox', { name: 'Filter by technology' });
+    await expectCards(6);
+    await page.getByRole('button', { name: /^Expand/ }).click();
+    await expectCards(8);
+    await page.getByRole('button', { name: 'Collapse projects' }).click();
+    await expectCards(6);
+    await technology.selectOption('Python');
+    await expectCards(3);
+    assert.equal(await page.getByRole('link', { name: 'C-3BOT', exact: true }).count(), 1);
+    assert.equal(await page.getByRole('link', { name: 'Cronario', exact: true }).count(), 0);
+    await page.getByRole('link', { name: 'DermaTrack', exact: true }).click();
+    await page.getByRole('heading', { level: 1, name: 'DermaTrack', exact: true }).waitFor();
+    for (const position of [0, 0.5, 1]) {
+      await page.evaluate((position) => window.scrollTo({
+        top: (document.documentElement.scrollHeight - innerHeight) * position,
+        behavior: 'instant',
+      }), position);
+      assert(await page.getByRole('link', { name: 'Back to projects', exact: true }).evaluate((link) => {
+        const bounds = link.getBoundingClientRect();
+        return bounds.y >= innerHeight - 100 && bounds.bottom <= innerHeight - 12 &&
+          link.contains(document.elementFromPoint(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2));
+      }), 'Back to projects must remain within reach throughout the page');
+    }
     await page.reload();
-    await page
-      .getByRole('heading', { name: 'DermaTrack', exact: true })
-      .waitFor();
+    await page.getByRole('heading', { level: 1, name: 'DermaTrack', exact: true }).waitFor();
+    await page.getByRole('link', { name: 'Back to projects', exact: true }).click();
+    await page.waitForFunction(() => document.activeElement?.id === 'project-card-dermatrack');
+    assert.equal(await technology.inputValue(), 'Python');
+    await expectCards(3);
+    await page.getByRole('button', { name: 'Clear filter', exact: true }).click();
+    await page.getByRole('link', { name: 'Back to home', exact: true }).click();
+    await page.waitForFunction(() => document.activeElement?.id === 'projects');
+    await expectCards(3);
+    await technology.selectOption('Dart');
+    assert.equal(await page.getByRole('link', { name: 'Tune Taker', exact: true }).count(), 1);
+    await expectCards(1);
+    await page.getByRole('button', { name: 'Clear filter', exact: true }).click();
+    await page.getByRole('button', { name: /^Expand/ }).click();
+    await expectCards(8);
+    await page.getByRole('link', { name: 'Energo-Sphere', exact: true }).click();
+    await page.getByRole('heading', { level: 1, name: 'Energo-Sphere', exact: true }).waitFor();
+    await page.getByRole('link', { name: 'Back to projects', exact: true }).click();
+    await page.waitForFunction(() => document.activeElement?.id === 'project-card-energo-sphere');
+    await expectCards(8);
+    assert.equal(await page.getByRole('button', { name: 'Collapse projects' }).getAttribute('aria-expanded'), 'true');
+    await page.getByRole('button', { name: 'Collapse projects' }).click();
+    await expectCards(3);
+    await page.goto(`${base}#/projects/dermatrack`);
+    await page.getByRole('link', { name: 'Back to projects', exact: true }).click();
+    await page.getByRole('heading', { level: 1, name: /Built with/ }).waitFor();
   });
   await check('CV route and direct refresh', async () => {
     await page.goto(`${base}#/cv`);

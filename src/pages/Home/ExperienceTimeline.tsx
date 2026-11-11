@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUpRight, Building2, Plus, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -6,8 +6,52 @@ import { experiences, experienceDisclaimer } from '../../data/experience';
 import ConstructionGuide from '../../components/animations/ConstructionGuide';
 import styles from './Home.module.css';
 
+// Keep the connection established when returning from another route.
+let experienceConnected = false;
+
 export default function ExperienceTimeline() {
   const [selected, setSelected] = useState<string | null>(null);
+  const connection = useRef<HTMLDivElement>(null);
+  const [connectionState, setConnectionState] = useState(() =>
+    experienceConnected ||
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ? 'ready'
+      : 'pending'
+  );
+
+  useEffect(() => {
+    const element = connection.current;
+    if (!element) return;
+    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let timer = 0;
+    const complete = () => {
+      window.clearTimeout(timer);
+      observer.disconnect();
+      experienceConnected = true;
+      setConnectionState('ready');
+    };
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        setConnectionState('loading');
+        timer = window.setTimeout(complete, 2400);
+      },
+      { rootMargin: '0px 0px -56px 0px' }
+    );
+    const onMotionChange = () => {
+      if (motionPreference.matches) complete();
+    };
+    if (experienceConnected || motionPreference.matches) complete();
+    else observer.observe(element);
+    motionPreference.addEventListener('change', onMotionChange);
+    return () => {
+      window.clearTimeout(timer);
+      observer.disconnect();
+      motionPreference.removeEventListener('change', onMotionChange);
+    };
+  }, []);
+
   const experience = experiences.find((item) => item.id === selected);
   return (
     <section
@@ -29,36 +73,56 @@ export default function ExperienceTimeline() {
       <p className={styles.sectionIntro}>
         Different environments. One drive to build better systems.
       </p>
-      <div className={styles.timeline}>
-        {experiences.map((item, index) => (
-          <div className={styles.milestone} key={item.id}>
-            <button
-              aria-expanded={selected === item.id}
-              aria-controls="experience-details"
-              onClick={() => setSelected(selected === item.id ? null : item.id)}
-              className={
-                selected === item.id ? styles.milestoneActive : undefined
-              }
-            >
-              <span className={styles.year}>
-                {item.year}
-                <span>
-                  {index === experiences.length - 1
-                    ? 'LATEST'
-                    : `0${index + 1}`}
-                </span>
-              </span>
-              <span className={styles.timelinePoint}>
-                <i />
-              </span>
-              <span className={styles.company}>{item.company}</span>
-              <span className={styles.timelineAction}>
-                {selected === item.id ? 'Close details' : 'Explore milestone'}
-                {selected === item.id ? <X size={12} /> : <Plus size={12} />}
-              </span>
-            </button>
+      <div
+        ref={connection}
+        className={styles.experienceConnection}
+        data-state={connectionState}
+        aria-busy={connectionState !== 'ready'}
+      >
+        {connectionState !== 'ready' && (
+          <div className={styles.connectionLoader} role="status">
+            <div className={styles.connectionCaption}>
+              <span>CONNECTING EXPERIENCE</span>
+              <span>Establishing connections…</span>
+            </div>
+            <div className={styles.connectionTrack} aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </div>
           </div>
-        ))}
+        )}
+        <div className={styles.timeline} aria-hidden={connectionState !== 'ready'}>
+          {experiences.map((item, index) => (
+            <div className={styles.milestone} key={item.id}>
+              <button
+                aria-expanded={selected === item.id}
+                aria-controls="experience-details"
+                onClick={() => setSelected(selected === item.id ? null : item.id)}
+                className={
+                  selected === item.id ? styles.milestoneActive : undefined
+                }
+              >
+                <span className={styles.year}>
+                  {item.year}
+                  <span>
+                    {index === experiences.length - 1
+                      ? 'LATEST'
+                      : `0${index + 1}`}
+                  </span>
+                </span>
+                <span className={styles.timelinePoint}>
+                  <i />
+                </span>
+                <span className={styles.company}>{item.company}</span>
+                <span className={styles.timelineAction}>
+                  {selected === item.id ? 'Close details' : 'Explore milestone'}
+                  {selected === item.id ? <X size={12} /> : <Plus size={12} />}
+                </span>
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
       <AnimatePresence initial={false}>
         {experience && (
